@@ -1,0 +1,249 @@
+- generic [ref=e2]:
+  - complementary [ref=e3]:
+    - generic [ref=e4]:
+      - heading "TM Global BI" [level=1] [ref=e5]:
+        - link "TM Global BI" [ref=e6] [cursor=pointer]:
+          - /url: http://127.0.0.1:8099/admin/
+          - heading "TM Global BI" [level=3] [ref=e7]
+      - navigation [ref=e8]:
+        - generic [ref=e10]:
+          - listitem [ref=e11]:
+            - link "Opportunities" [ref=e12] [cursor=pointer]:
+              - /url: http://127.0.0.1:8099/admin/opportunity/list
+              - generic [ref=e15]: Opportunities
+          - listitem [ref=e16]:
+            - link "Organisations" [ref=e17] [cursor=pointer]:
+              - /url: http://127.0.0.1:8099/admin/organisation/list
+              - generic [ref=e20]: Organisations
+          - listitem [ref=e21]:
+            - link "Profiles" [ref=e22] [cursor=pointer]:
+              - /url: http://127.0.0.1:8099/admin/profile/list
+              - generic [ref=e25]: Profiles
+          - listitem [ref=e26]:
+            - link "Sources" [ref=e27] [cursor=pointer]:
+              - /url: http://127.0.0.1:8099/admin/source/list
+              - generic [ref=e30]: Sources
+          - listitem [ref=e31]:
+            - link "Decisions" [ref=e32] [cursor=pointer]:
+              - /url: http://127.0.0.1:8099/admin/decision/list
+              - generic [ref=e35]: Decisions
+          - listitem [ref=e36]:
+            - link "Industry signals" [ref=e37] [cursor=pointer]:
+              - /url: http://127.0.0.1:8099/admin/industry-signal/list
+              - generic [ref=e40]: Industry signals
+          - listitem [ref=e41]:
+            - link "Weekly reports" [ref=e42] [cursor=pointer]:
+              - /url: http://127.0.0.1:8099/admin/weekly-report/list
+              - generic [ref=e45]: Weekly reports
+          - listitem [ref=e46]:
+            - link "Scan runs" [ref=e47] [cursor=pointer]:
+              - /url: http://127.0.0.1:8099/admin/scan-run/list
+              - generic [ref=e50]: Scan runs
+  - generic [ref=e51]:
+    - generic [ref=e53]:
+      - generic:
+        - generic:
+          - heading [level=2]
+    - generic [ref=e62]:
+      - generic [ref=e63]:
+        - heading "Opportunities" [level=3] [ref=e64]
+        - generic [ref=e65]:
+          - link "Export" [ref=e67] [cursor=pointer]:
+            - /url: "#"
+          - link "+ New Opportunity" [ref=e69] [cursor=pointer]:
+            - /url: http://127.0.0.1:8099/admin/opportunity/create
+      - generic [ref=e71]:
+        - button "Actions" [ref=e73] [cursor=pointer]
+        - generic [ref=e75]:
+          - 'textbox "Search: title, org" [ref=e76]'
+          - button "Search" [ref=e77] [cursor=pointer]
+          - button [disabled]
+      - table [ref=e79]:
+        - rowgroup [ref=e80]:
+          - row "Select all id title org category fit_foundation fit_takeout relevance deadline" [ref=e81]:
+            - columnheader "Select all" [ref=e82]:
+              - checkbox "Select all" [ref=e83]
+            - columnheader [ref=e84]
+            - columnheader "id" [ref=e85]
+            - columnheader "title" [ref=e86]
+            - columnheader "org" [ref=e87]
+            - columnheader "category" [ref=e88]
+            - columnheader "fit_foundation" [ref=e89]:
+              - link "fit_foundation" [ref=e90] [cursor=pointer]:
+                - /url: http://127.0.0.1:8099/admin/opportunity/list?sortBy=fit_foundation&sort=asc
+            - columnheader "fit_takeout" [ref=e91]:
+              - link "fit_takeout" [ref=e92] [cursor=pointer]:
+                - /url: http://127.0.0.1:8099/admin/opportunity/list?sortBy=fit_takeout&sort=asc
+            - columnheader "relevance" [ref=e93]
+            - columnheader "deadline" [ref=e94]
+        - rowgroup [ref=e95]:
+          - row "Select item View Edit Delete gam-au Great African Museum Initiative African Union bd 82 70 HIGH No deadline stated" [ref=e96]:
+            - cell "Select item" [ref=e97]:
+              - checkbox "Select item" [ref=e98]
+            - cell "View Edit Delete" [ref=e99]:
+              - link "View" [ref=e100] [cursor=pointer]:
+                - /url: http://127.0.0.1:8099/admin/opportunity/details/gam-au
+              - link "Edit" [ref=e103] [cursor=pointer]:
+                - /url: http://127.0.0.1:8099/admin/opportunity/edit/gam-au
+              - link "Delete" [ref=e106] [cursor=pointer]:
+                - /url: "#"
+                - generic "Delete" [ref=e107]
+            - cell "gam-au" [ref=e110]
+            - cell "Great African Museum Initiative" [ref=e111]
+            - cell "African Union" [ref=e112]
+            - cell "bd" [ref=e113]
+            - cell "82" [ref=e114]
+            - cell "70" [ref=e115]
+            - cell "HIGH" [ref=e116]
+            - cell "No deadline stated" [ref=e117]
+          - row "Select item View Edit Delete google-arts Google Arts & Culture Initiatives Google bd 82 48 HIGH No deadline stated" [ref=e118]:
+            - cell "Select item" [ref=e119]:
+              - checkbox "Select item" [ref=e120]
+            - cell "View Edit Delete" [ref=e121]:
+              - link "View" [ref=e122] [cursor=pointer]:
+                - /url: http://127.0.0.1:8099/admin/opportunity/details/google-arts
+              - link "Edit" [ref=e125] [cursor=pointer]:
+                - /url: http://127.0.0.1:8099/admin/opportunity/edit/google-arts
+              - link "Delete" [ref=e128] [cursor=pointer]:
+                - /url: "#"
+                - generic "Delete" [ref=e129]
+            - cell "google-arts" [ref=e132]
+            - cell "Google Arts & Culture Initiatives" [ref=e133]
+            - cell "Google" [ref=e134]
+            - cell "bd" [ref=e135]
+            - cell "82" [ref=e136]
+            - cell "48" [ref=e137]
+            - cell "HIGH" [ref=e138]
+            - cell "No deadline stated" [ref=e139]
+          - row "Select item View Edit Delete au-commission-gami Great African Museum Initiative (Advisory Track) African Union Commission bd 82 35 HIGH No deadline stated" [ref=e140]:
+            - cell "Select item" [ref=e141]:
+              - checkbox "Select item" [ref=e142]
+            - cell "View Edit Delete" [ref=e143]:
+              - link "View" [ref=e144] [cursor=pointer]:
+                - /url: http://127.0.0.1:8099/admin/opportunity/details/au-commission-gami
+              - link "Edit" [ref=e147] [cursor=pointer]:
+                - /url: http://127.0.0.1:8099/admin/opportunity/edit/au-commission-gami
+              - link "Delete" [ref=e150] [cursor=pointer]:
+                - /url: "#"
+                - generic "Delete" [ref=e151]
+            - cell "au-commission-gami" [ref=e154]
+            - cell "Great African Museum Initiative (Advisory Track)" [ref=e155]
+            - cell "African Union Commission" [ref=e156]
+            - cell "bd" [ref=e157]
+            - cell "82" [ref=e158]
+            - cell "35" [ref=e159]
+            - cell "HIGH" [ref=e160]
+            - cell "No deadline stated" [ref=e161]
+          - row "Select item View Edit Delete google-news Google News Initiative (GNI) Google bd 78 30 HIGH No deadline stated" [ref=e162]:
+            - cell "Select item" [ref=e163]:
+              - checkbox "Select item" [ref=e164]
+            - cell "View Edit Delete" [ref=e165]:
+              - link "View" [ref=e166] [cursor=pointer]:
+                - /url: http://127.0.0.1:8099/admin/opportunity/details/google-news
+              - link "Edit" [ref=e169] [cursor=pointer]:
+                - /url: http://127.0.0.1:8099/admin/opportunity/edit/google-news
+              - link "Delete" [ref=e172] [cursor=pointer]:
+                - /url: "#"
+                - generic "Delete" [ref=e173]
+            - cell "google-news" [ref=e176]
+            - cell "Google News Initiative (GNI)" [ref=e177]
+            - cell "Google" [ref=e178]
+            - cell "bd" [ref=e179]
+            - cell "78" [ref=e180]
+            - cell "30" [ref=e181]
+            - cell "HIGH" [ref=e182]
+            - cell "No deadline stated" [ref=e183]
+          - row "Select item View Edit Delete wipo The WIPO Scale Up Your IP Program 2026 for Women Innovators World Intellectual Property Organization (WIPO) partnership 72 15 MEDIUM No deadline stated" [ref=e184]:
+            - cell "Select item" [ref=e185]:
+              - checkbox "Select item" [ref=e186]
+            - cell "View Edit Delete" [ref=e187]:
+              - link "View" [ref=e188] [cursor=pointer]:
+                - /url: http://127.0.0.1:8099/admin/opportunity/details/wipo
+              - link "Edit" [ref=e191] [cursor=pointer]:
+                - /url: http://127.0.0.1:8099/admin/opportunity/edit/wipo
+              - link "Delete" [ref=e194] [cursor=pointer]:
+                - /url: "#"
+                - generic "Delete" [ref=e195]
+            - cell "wipo" [ref=e198]
+            - cell "The WIPO Scale Up Your IP Program 2026 for Women Innovators" [ref=e199]
+            - cell "World Intellectual Property Organization (WIPO)" [ref=e200]
+            - cell "partnership" [ref=e201]
+            - cell "72" [ref=e202]
+            - cell "15" [ref=e203]
+            - cell "MEDIUM" [ref=e204]
+            - cell "No deadline stated" [ref=e205]
+          - row "Select item View Edit Delete encyclopaedia Encyclopaedia Africana Project African Union bd 72 55 HIGH No deadline stated" [ref=e206]:
+            - cell "Select item" [ref=e207]:
+              - checkbox "Select item" [ref=e208]
+            - cell "View Edit Delete" [ref=e209]:
+              - link "View" [ref=e210] [cursor=pointer]:
+                - /url: http://127.0.0.1:8099/admin/opportunity/details/encyclopaedia
+              - link "Edit" [ref=e213] [cursor=pointer]:
+                - /url: http://127.0.0.1:8099/admin/opportunity/edit/encyclopaedia
+              - link "Delete" [ref=e216] [cursor=pointer]:
+                - /url: "#"
+                - generic "Delete" [ref=e217]
+            - cell "encyclopaedia" [ref=e220]
+            - cell "Encyclopaedia Africana Project" [ref=e221]
+            - cell "African Union" [ref=e222]
+            - cell "bd" [ref=e223]
+            - cell "72" [ref=e224]
+            - cell "55" [ref=e225]
+            - cell "HIGH" [ref=e226]
+            - cell "No deadline stated" [ref=e227]
+          - row "Select item View Edit Delete global-institute Global Institute Fellowship for Transforming Systems 2026 Global Institute watch 58 12 MEDIUM No deadline stated" [ref=e228]:
+            - cell "Select item" [ref=e229]:
+              - checkbox "Select item" [ref=e230]
+            - cell "View Edit Delete" [ref=e231]:
+              - link "View" [ref=e232] [cursor=pointer]:
+                - /url: http://127.0.0.1:8099/admin/opportunity/details/global-institute
+              - link "Edit" [ref=e235] [cursor=pointer]:
+                - /url: http://127.0.0.1:8099/admin/opportunity/edit/global-institute
+              - link "Delete" [ref=e238] [cursor=pointer]:
+                - /url: "#"
+                - generic "Delete" [ref=e239]
+            - cell "global-institute" [ref=e242]
+            - cell "Global Institute Fellowship for Transforming Systems 2026" [ref=e243]
+            - cell "Global Institute" [ref=e244]
+            - cell "watch" [ref=e245]
+            - cell "58" [ref=e246]
+            - cell "12" [ref=e247]
+            - cell "MEDIUM" [ref=e248]
+            - cell "No deadline stated" [ref=e249]
+          - row "Select item View Edit Delete google-ai Google.org AI Collaboratives Google.org bd 55 15 MEDIUM No deadline stated" [ref=e250]:
+            - cell "Select item" [ref=e251]:
+              - checkbox "Select item" [ref=e252]
+            - cell "View Edit Delete" [ref=e253]:
+              - link "View" [ref=e254] [cursor=pointer]:
+                - /url: http://127.0.0.1:8099/admin/opportunity/details/google-ai
+              - link "Edit" [ref=e257] [cursor=pointer]:
+                - /url: http://127.0.0.1:8099/admin/opportunity/edit/google-ai
+              - link "Delete" [ref=e260] [cursor=pointer]:
+                - /url: "#"
+                - generic "Delete" [ref=e261]
+            - cell "google-ai" [ref=e264]
+            - cell "Google.org AI Collaboratives" [ref=e265]
+            - cell "Google.org" [ref=e266]
+            - cell "bd" [ref=e267]
+            - cell "55" [ref=e268]
+            - cell "15" [ref=e269]
+            - cell "MEDIUM" [ref=e270]
+            - cell "No deadline stated" [ref=e271]
+      - generic [ref=e272]:
+        - paragraph [ref=e273]: Showing 1 to 8 of 8 items
+        - list [ref=e274]:
+          - listitem [ref=e275]:
+            - link "prev":
+              - /url: "#"
+              - text: prev
+          - listitem [ref=e276]:
+            - link "1" [ref=e277] [cursor=pointer]:
+              - /url: http://127.0.0.1:8099/admin/opportunity/list?page=1
+          - listitem [ref=e278]:
+            - link "next":
+              - /url: "#"
+              - text: next
+        - generic [ref=e279]:
+          - text: Show
+          - link "10 / Page" [ref=e280] [cursor=pointer]:
+            - /url: "#"

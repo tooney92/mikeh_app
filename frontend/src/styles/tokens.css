@@ -1,0 +1,50 @@
+/**
+ * TM Global BI design tokens.
+ * Values are taken verbatim from the design handoff — treat them as exact.
+ */
+:root {
+  /* Brand */
+  --tm-orange: #e06e3d;
+  --tm-pink: #ca327e;
+  --tm-ink: #002341;
+  --tm-ground: #ffffff;
+  --tm-band: #fbf9f8;
+  --tm-gradient: linear-gradient(135deg, #e06e3d, #ca327e);
+
+  /* Ink at opacity — the handoff leans on these constantly */
+  --tm-ink-72: rgba(0, 35, 65, 0.72);
+  --tm-ink-65: rgba(0, 35, 65, 0.65);
+  --tm-ink-62: rgba(0, 35, 65, 0.62);
+  --tm-ink-60: rgba(0, 35, 65, 0.6);
+  --tm-ink-55: rgba(0, 35, 65, 0.55);
+  --tm-ink-40: rgba(0, 35, 65, 0.4);
+  --tm-ink-25: rgba(0, 35, 65, 0.25);
+  --tm-ink-15: rgba(0, 35, 65, 0.15);
+  --tm-ink-10: rgba(0, 35, 65, 0.1);
+  --tm-ink-08: rgba(0, 35, 65, 0.08);
+  --tm-ink-05: rgba(0, 35, 65, 0.05);
+  --tm-ink-04: rgba(0, 35, 65, 0.04);
+
+  /* Pink tints */
+  --tm-pink-25: rgba(202, 50, 126, 0.25);
+  --tm-pink-10: rgba(202, 50, 126, 0.1);
+  --tm-pink-08: rgba(202, 50, 126, 0.08);
+
+  /* Shadows */
+  --tm-shadow-card: 0 40px 90px -30px rgba(0, 35, 65, 0.35);
+  --tm-shadow-panel: 0 40px 80px -28px rgba(0, 35, 65, 0.3);
+  --tm-shadow-lift: 0 20px 44px -22px rgba(0, 35, 65, 0.35);
+  --tm-shadow-cta: 0 14px 32px -10px rgba(202, 50, 126, 0.55);
+  --tm-shadow-pill: 0 8px 22px -9px rgba(202, 50, 126, 0.55);
+  --tm-shadow-step: 0 12px 24px -10px rgba(202, 50, 126, 0.5);
+
+  /* Layout */
+  --tm-landing-max: 1100px;
+  --tm-app-max: 1180px;
+
+  /*
+   * Elms Sans is the specified face (loaded in index.html). The fallback stack
+   * matters: if the webfont fails, headings still need a grotesque, not serif.
+   */
+  --tm-font: 'Elms Sans', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}

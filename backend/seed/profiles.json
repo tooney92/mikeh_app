@@ -1,0 +1,24 @@
+{
+  "takeoutMedia": {
+    "name": "Takeout Media",
+    "positioning": "A Nigerian communications and brand agency with development-sector and financial-sector depth.",
+    "priorities": "Winning donor-funded communications contracts\nGrowing financial-sector marketing portfolio\nBuilding agency partnerships and subcontracting pipeline",
+    "capabilities": "Communications\nBrand strategy\nStrategic communications\nCampaigns\nPR\nSocial media\nContent\nVideo production\nDocumentary production\nAdvertising\nDevelopment communications\nSBCC\nDesign\nBranding\nTelevision and radio commercials\nPublic-sector communications\nFinancial-sector communications",
+    "credentials": "Development-sector communications campaigns\nFinancial-sector brand and marketing work\nDocumentary and content production\nPublic-sector communications programmes",
+    "neverShow": "Opportunities under roughly NGN 20m\nHighly competitive open tenders with no differentiation\nWork requiring physical presence outside Nigeria with no local partner"
+  },
+  "tmFoundation": {
+    "name": "TM Foundation",
+    "positioning": "An African creative economy intelligence and ecosystem-development organisation — not simply an NGO.",
+    "priorities": "Building CIRP Cohort 2\nExpanding ecosystem partnerships\nPositioning as African creative economy intelligence body\nGrowing creator economy research programme",
+    "capabilities": "Creative economy\nCreator economy\nCreative entrepreneurship\nCreative investment readiness\nCultural and creative industries\nResearch and intelligence\nEcosystem development\nYouth development\nCapacity building\nConvening\nAdvocacy\nCreative technology\nMedia\nAfrican creative industries",
+    "credentials": "African Creator Economy Report 2024\nAfrican Creator Economy Report 2025\nNigerian Creator Economy Report 2025\nCIRP (Creative Industries Readiness Programme)\nTMCON\nCreative economy ecosystem development work",
+    "neverShow": "Pure service delivery with no research or ecosystem component\nOpportunities outside Africa with no African creative economy angle"
+  },
+  "trackedOrganisations": [
+    "UNDP Nigeria", "World Bank", "Jaiz Bank", "TAJBank",
+    "Standards Organisation of Nigeria (SON)", "Industrial Training Fund (ITF)",
+    "NNPC", "GIZ", "Federal Ministry of Art, Culture, Tourism and Creative Economy",
+    "National Council for Arts and Culture (NCAC)"
+  ]
+}

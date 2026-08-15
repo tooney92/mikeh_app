@@ -1,0 +1,17 @@
+[
+  {"name":"AfDB DACON","type":"html","category":"international","scope":"both","url":"https://dacon.afdb.org/dacon/"},
+  {"name":"Africa No Filter","type":"html","category":"creative","scope":"both","url":"https://africanofilter.org/"},
+  {"name":"African Culture Fund","type":"html","category":"creative","scope":"both","url":"https://www.africanculturefund.net/en/"},
+  {"name":"African Development Bank Procurement","type":"html","category":"procurement","scope":"takeout","url":"https://www.afdb.org/en/projects-and-operations/procurement","lastStatus":"HTTP 403","lastStatusOk":false},
+  {"name":"African Union Opportunities","type":"html","category":"procurement","scope":"both","url":"https://au.int/en/bids","lastStatus":"ok — 5 candidates","lastStatusOk":true},
+  {"name":"Bureau of Public Procurement (Nigeria)","type":"html","category":"nigeria","scope":"both","url":"https://bpp.gov.ng/"},
+  {"name":"British Council Nigeria","type":"html","category":"creative-economy","scope":"both","url":"https://www.britishcouncil.org.ng/programmes/arts","lastStatus":"HTTP 403","lastStatusOk":false},
+  {"name":"Devex","type":"html","category":"creative","scope":"both","url":"https://www.devex.com/"},
+  {"name":"Ford Foundation News","type":"rss","category":"foundation","scope":"foundation","url":"https://www.fordfoundation.org/news-and-stories/stories/feed/","lastStatus":"ok — 0 candidates","lastStatusOk":true},
+  {"name":"Gates Foundation Newsroom","type":"html","category":"foundation","scope":"foundation","url":"https://www.gatesfoundation.org/ideas/media-center","lastStatus":"ok — 0 candidates","lastStatusOk":true},
+  {"name":"Google.org Opportunities","type":"html","category":"corporate","scope":"foundation","url":"https://www.google.org/","lastStatus":"ok — 4 candidates","lastStatusOk":true},
+  {"name":"Opportunity Desk","type":"rss","category":"grants","scope":"foundation","url":"https://opportunitydesk.org/feed/","lastStatus":"ok — 5 candidates","lastStatusOk":true},
+  {"name":"Tony Elumelu Foundation (TEFConnect)","type":"html","category":"creative","scope":"both","url":"https://tefconnect.com/"},
+  {"name":"UNESCO Creative Economy","type":"html","category":"creative-economy","scope":"foundation","url":"https://www.unesco.org/en/creative-economy","lastStatus":"ok — 0 candidates","lastStatusOk":true},
+  {"name":"World Bank Procurement Notices","type":"json","category":"procurement","scope":"takeout","url":"https://search.worldbank.org/api/v2/procnotices?format=json","lastStatus":"ok — 0 candidates","lastStatusOk":true}
+]

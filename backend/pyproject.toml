@@ -1,0 +1,21 @@
+[project]
+name = "tm-global-bi-backend"
+version = "0.1.0"
+description = "TM Global Business Intelligence — API"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "sqlmodel>=0.0.22",
+    "sqladmin>=0.31.0",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.27",
+    "pytest>=8.3",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
