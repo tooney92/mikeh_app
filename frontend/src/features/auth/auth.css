@@ -1,0 +1,299 @@
+/**
+ * Login and password screens.
+ *
+ * These follow the APP's design language, not the landing page's: flat,
+ * zero border-radius, rule-based, architectural. The landing page is
+ * deliberately the rounded, soft-shadowed one — they are two skins on
+ * purpose, per the handoff.
+ */
+
+.tm-login {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+}
+
+/* ------------------------------------------------------------- aside --- */
+
+.tm-login__aside {
+  background: var(--tm-ink);
+  color: #fff;
+  padding: 56px 56px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.tm-login__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tm-login__mark {
+  width: 32px;
+  height: 32px;
+  background: var(--tm-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 11px;
+}
+
+.tm-login__wordmark {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+}
+
+.tm-login__kicker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tm-pink);
+  margin-bottom: 20px;
+}
+
+.tm-login__dash {
+  width: 28px;
+  height: 2px;
+  background: var(--tm-gradient);
+}
+
+.tm-login__headline {
+  font-size: 44px;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  font-weight: 800;
+  margin: 0 0 20px;
+  max-width: 15ch;
+}
+
+.tm-login__lede {
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0;
+  max-width: 46ch;
+}
+
+.tm-login__units {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 32px 0 0;
+}
+
+.tm-login__unit {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 6px 10px;
+}
+
+.tm-login__foot {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* -------------------------------------------------------------- form --- */
+
+.tm-login__main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 48px;
+}
+
+.tm-login__form {
+  width: 100%;
+  max-width: 400px;
+}
+
+.tm-login__title {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 8px;
+}
+
+.tm-login__hint {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--tm-ink-60);
+  margin: 0 0 36px;
+}
+
+.tm-field {
+  display: block;
+  margin-bottom: 22px;
+}
+
+.tm-field__label {
+  display: block;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--tm-ink-60);
+  margin-bottom: 8px;
+}
+
+.tm-field__input {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--tm-ink);
+  background: var(--tm-ground);
+  border: 1px solid var(--tm-ink-25);
+  border-radius: 0;
+}
+
+.tm-field__input:focus {
+  outline: none;
+  border-color: var(--tm-pink);
+}
+
+.tm-field__input:disabled {
+  background: var(--tm-ink-04);
+  color: var(--tm-ink-55);
+}
+
+.tm-submit {
+  width: 100%;
+  background: var(--tm-gradient);
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  padding: 16px;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.tm-submit:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+/*
+ * Errors are ruled panels, not toasts: a wrong password should stay on screen
+ * until it is fixed.
+ */
+.tm-alert {
+  border-left: 2px solid var(--tm-pink);
+  background: var(--tm-pink-08);
+  padding: 12px 14px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--tm-ink);
+  margin-bottom: 24px;
+}
+
+.tm-alert--ok {
+  border-left-color: var(--tm-ink);
+  background: var(--tm-ink-04);
+}
+
+.tm-login__meta {
+  margin: 28px 0 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--tm-ink-10);
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--tm-ink-55);
+}
+
+/* ----------------------------------------------------- account screen --- */
+
+.tm-account {
+  max-width: 520px;
+}
+
+.tm-account__title {
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  margin: 0 0 10px;
+}
+
+.tm-account__lede {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--tm-ink-60);
+  margin: 0 0 32px;
+}
+
+.tm-account__section {
+  border-top: 2px solid var(--tm-ink);
+  padding-top: 24px;
+  margin-top: 32px;
+}
+
+.tm-account__rows {
+  border-top: 1px solid var(--tm-ink-10);
+}
+
+.tm-account__row {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--tm-ink-10);
+  font-size: 14px;
+}
+
+.tm-account__key {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--tm-ink-55);
+  padding-top: 3px;
+}
+
+.tm-account__value {
+  font-weight: 700;
+}
+
+/* -------------------------------------------------------- responsive --- */
+
+@media (max-width: 900px) {
+  .tm-login {
+    grid-template-columns: 1fr;
+  }
+
+  .tm-login__aside {
+    padding: 28px 24px;
+  }
+
+  .tm-login__headline {
+    font-size: 30px;
+    max-width: none;
+  }
+
+  /* Supporting copy is a nice-to-have; the form is the job on a phone. */
+  .tm-login__lede,
+  .tm-login__units,
+  .tm-login__foot {
+    display: none;
+  }
+
+  .tm-login__main {
+    padding: 40px 24px;
+  }
+}
