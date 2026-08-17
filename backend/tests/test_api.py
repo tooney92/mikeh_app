@@ -120,5 +120,12 @@ def test_detail_carries_every_units_score(client, auth):
 
 def test_seeded_orgs_and_sources(client, auth):
     assert len(client.get("/api/organisations", headers=auth).json()) == 10
-    assert len(client.get("/api/sources", headers=auth).json()) == 15
     assert len(client.get("/api/business-units", headers=auth).json()) == 5
+
+    # 90, not 15: seeding now also merges the client's 81 platforms in on a
+    # database that has never seen them. The 15 originals are still all there —
+    # that is the point of a merge, and the number this asserts.
+    srcs = client.get("/api/sources", headers=auth).json()
+    assert len(srcs) == 90
+    assert sum(1 for s in srcs if s["provenance"] == "seed") == 9
+    assert sum(1 for s in srcs if s["provenance"] == "client_import") == 81

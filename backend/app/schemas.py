@@ -6,6 +6,7 @@ this keeps one convention across the boundary. Columns stay snake_case.
 """
 
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
@@ -162,6 +163,17 @@ class ProfileUpdate(CamelModel):
     min_fit_percent: int | None = Field(default=None, ge=0, le=100)
 
 
+# The only values `type` may take. "unknown" is not a failure state — it means
+# nobody has examined the source yet, and it exists so that an unexamined row
+# cannot look like an examined one. Validated on POST and PATCH; "pdf" used to
+# return 201 and be stored verbatim.
+SOURCE_TYPES = ("html", "rss", "json", "unknown")
+# aggregator | issuer | unconfirmed. Both real states are named so "issuer" is
+# asserted rather than inferred from "not an aggregator".
+SOURCE_ROLES = ("aggregator", "issuer", "unconfirmed")
+PROVENANCES = ("seed", "client_import")
+
+
 class SourceOut(CamelModel):
     id: int
     name: str
@@ -173,20 +185,46 @@ class SourceOut(CamelModel):
     last_status: str | None
     last_status_ok: bool | None
     last_checked_at: datetime | None
+    provenance: str
+    source_role: str
+    client_opportunity_type: str
+    client_sectors: str
 
 
 class SourceCreate(CamelModel):
     name: str
     url: str
-    type: str = "html"
+    # Default stays "html" rather than "unknown": todo 3's VERIFIED contract
+    # documents it as such, and a human filling this form is making a finding,
+    # not importing an unexamined row. The import does not go through here.
+    type: Literal["html", "rss", "json", "unknown"] = "html"
     category: str = ""
+    # scope is deliberately NOT validated — the vocabulary is stale and
+    # replacing it is a model question affecting all five units, flagged for a
+    # human rather than settled inside an import deliverable.
     scope: str = "both"
 
 
 class SourceUpdate(CamelModel):
+    """Widened so an imported row can actually be corrected.
+
+    Previously only active/name/url, which meant type, category and scope were
+    write-once at creation — a mis-typed source had to be deleted and recreated,
+    losing its id and crawl history. That was tolerable for 15 hand-written rows
+    and not for 90 imported ones.
+
+    type and sourceRole matter most: every imported row lands "unknown" and
+    "unconfirmed" BY DESIGN, and a provisional value nobody can confirm is not
+    provisional, it is permanent.
+    """
+
     active: bool | None = None
     name: str | None = None
     url: str | None = None
+    type: Literal["html", "rss", "json", "unknown"] | None = None
+    category: str | None = None
+    scope: str | None = None
+    source_role: Literal["aggregator", "issuer", "unconfirmed"] | None = None
 
 
 class DecisionCreate(CamelModel):

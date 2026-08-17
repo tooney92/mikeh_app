@@ -247,14 +247,35 @@ class OpportunityScore(SQLModel, table=True):
 class Source(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     name: str
-    type: str = "html"  # html | rss | json
+    # html | rss | json | unknown. "unknown" means nobody has looked, and it
+    # exists so an unexamined source cannot masquerade as an examined one — the
+    # client's spreadsheet has no column saying how a site publishes, so all 81
+    # imported rows land here rather than silently claiming "html".
+    type: str = "html"
     category: str = ""
-    scope: str = "both"  # takeout | foundation | both
+    # takeout | foundation | both. STALE: predates the five-unit model and
+    # cannot express Design Teem, Ingene Studios or TM Labs. Imported rows carry
+    # "both" as a knowingly temporary placeholder, not as a classification.
+    scope: str = "both"
     url: str
     active: bool = True
     last_status: str | None = None
     last_status_ok: bool | None = None
     last_checked_at: datetime | None = None
+    # seed | client_import — where this row came from, so the client can see her
+    # own list arrived intact and we can tell her rows from ours.
+    provenance: str = "seed"
+    # aggregator | issuer | unconfirmed. A DISCOVERY PLATFORM lists other
+    # people's opportunities; an ISSUER publishes its own, and the crawler has
+    # to chase links out of the first rather than parse postings on it. A string
+    # enum rather than a nullable boolean because null is falsy: `if
+    # (isAggregator)` would render every unconfirmed row as "not an aggregator".
+    source_role: str = "unconfirmed"
+    # The client's own words from her spreadsheet, preserved verbatim and never
+    # parsed. All 81 values are distinct and none is blank, so there is no
+    # vocabulary to derive — whoever builds the exclusion rules must match TEXT.
+    client_opportunity_type: str = ""
+    client_sectors: str = ""
 
 
 class Decision(SQLModel, table=True):

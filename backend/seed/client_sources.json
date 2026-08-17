@@ -1,0 +1,488 @@
+[
+  {
+    "name": "UN Global Marketplace (UNGM)",
+    "url": "https://www.ungm.org/public/notice",
+    "clientOpportunityType": "RFPs, RFQs, ITBs, EOIs, supplier registration, consultancy opportunities",
+    "clientSectors": "All sectors; development, health, education, humanitarian, communications"
+  },
+  {
+    "name": "UNDP Nigeria Procurement",
+    "url": "https://www.undp.org/nigeria/procurement",
+    "clientOpportunityType": "RFPs, RFQs, ITBs, individual consultancy and service contracts",
+    "clientSectors": "Governance, livelihoods, climate, digital, communications, social development"
+  },
+  {
+    "name": "World Bank Project Procurement",
+    "url": "https://projects.worldbank.org/en/projects-operations/opportunities",
+    "clientOpportunityType": "EOIs, consulting, goods, works and non-consulting service contracts",
+    "clientSectors": "Infrastructure, education, health, digital, agriculture, public sector, creative economy"
+  },
+  {
+    "name": "World Bank STEP",
+    "url": "https://step.worldbank.org/",
+    "clientOpportunityType": "Procurement plans, project pipeline and tender intelligence",
+    "clientSectors": "All World Bank-financed sectors"
+  },
+  {
+    "name": "African Development Bank Current Solicitations",
+    "url": "https://www.afdb.org/en/about-us/corporate-procurement/procurement-notices/current-solicitations",
+    "clientOpportunityType": "RFPs, EOIs, consultancy, goods and services tenders",
+    "clientSectors": "Infrastructure, finance, energy, agriculture, climate, governance, regional integration"
+  },
+  {
+    "name": "AfDB DACON",
+    "url": "https://dacon.afdb.org/dacon/",
+    "clientOpportunityType": "Individual consultant and consulting-firm registration",
+    "clientSectors": "Development consulting; policy, infrastructure, finance, environment, social sectors"
+  },
+  {
+    "name": "EU Funding & Tenders Portal",
+    "url": "https://ec.europa.eu/info/funding-tenders/opportunities/portal/",
+    "clientOpportunityType": "Grants, calls for proposals, tenders, research funding, prizes and expert opportunities",
+    "clientSectors": "Research, innovation, culture, climate, governance, civil society, digital"
+  },
+  {
+    "name": "Global Fund Business Opportunities",
+    "url": "https://www.theglobalfund.org/en/business-opportunities/",
+    "clientOpportunityType": "Tenders, supplier opportunities, programme services and consultancy",
+    "clientSectors": "Health, HIV, tuberculosis, malaria, supply chain, data and communications"
+  },
+  {
+    "name": "SAM.gov",
+    "url": "https://sam.gov/opportunities",
+    "clientOpportunityType": "US government RFPs, RFIs, sources-sought notices and contracts",
+    "clientSectors": "Development, security, health, technology, professional services, infrastructure"
+  },
+  {
+    "name": "Grants.gov",
+    "url": "https://www.grants.gov/",
+    "clientOpportunityType": "US federal grants and cooperative agreements",
+    "clientSectors": "Research, education, health, development, culture, science and civil society"
+  },
+  {
+    "name": "GIZ Tenders",
+    "url": "https://www.giz.de/en/partner/contractor/tenders",
+    "clientOpportunityType": "Consulting, technical assistance, services, works and equipment tenders",
+    "clientSectors": "Climate, governance, agriculture, skills, digital, health, economic development"
+  },
+  {
+    "name": "KfW Development Bank",
+    "url": "https://www.kfw-entwicklungsbank.de/International-financing/KfW-Development-Bank/",
+    "clientOpportunityType": "Donor-funded tenders and project opportunities",
+    "clientSectors": "Infrastructure, climate, energy, health, education, financial inclusion"
+  },
+  {
+    "name": "FSD Africa Procurement",
+    "url": "https://fsdafrica.org/procurement/",
+    "clientOpportunityType": "RFPs, consultancy assignments and supplier opportunities",
+    "clientSectors": "Financial inclusion, fintech, MSMEs, climate finance, capital markets"
+  },
+  {
+    "name": "TradeMark Africa Procurement",
+    "url": "https://trademarkafrica.com/procurement/",
+    "clientOpportunityType": "Tenders, RFPs and consultancy opportunities",
+    "clientSectors": "Trade, logistics, regional integration, border systems, business environment"
+  },
+  {
+    "name": "African Union Procurement",
+    "url": "https://au.int/en/procurement",
+    "clientOpportunityType": "Tenders, EOIs, consultancy, grants and partnership calls",
+    "clientSectors": "Continental policy, governance, peace, agriculture, health, youth and culture"
+  },
+  {
+    "name": "AU-IBAR Grant and Funding Opportunities",
+    "url": "https://www.au-ibar.org/work-with-us/procurement/grant-and-funding-opportunities",
+    "clientOpportunityType": "Grants and funding calls",
+    "clientSectors": "Agriculture, livestock, environment, climate and development"
+  },
+  {
+    "name": "Bureau of Public Procurement (Nigeria)",
+    "url": "https://bpp.gov.ng/",
+    "clientOpportunityType": "Federal procurement notices, prequalification and procurement guidance",
+    "clientSectors": "All Nigerian federal public-sector sectors"
+  },
+  {
+    "name": "Nigeria Open Contracting Portal (NOCOPO)",
+    "url": "https://nocopo.bpp.gov.ng/",
+    "clientOpportunityType": "Procurement plans, tender records, contract awards and supplier intelligence",
+    "clientSectors": "All Nigerian federal public-sector sectors"
+  },
+  {
+    "name": "BPP Federal Contractors Database",
+    "url": "https://federalcontractors.bpp.gov.ng/",
+    "clientOpportunityType": "Supplier and contractor registration",
+    "clientSectors": "Federal government procurement"
+  },
+  {
+    "name": "Nigerian Petroleum Exchange (NipeX)",
+    "url": "https://www.nipex-ng.com/",
+    "clientOpportunityType": "EOIs, ITTs, vendor prequalification and supplier registration",
+    "clientSectors": "Oil, gas, energy and related professional services"
+  },
+  {
+    "name": "Chevron Nigeria Supplier EOI Portal",
+    "url": "https://vis-nma.azure.chevron.com/Supplier/Index",
+    "clientOpportunityType": "Supplier EOIs and vendor registration",
+    "clientSectors": "Oil, gas, energy and related services"
+  },
+  {
+    "name": "Devex",
+    "url": "https://www.devex.com/",
+    "clientOpportunityType": "Development tenders, grants, consultancy jobs and partnership opportunities",
+    "clientSectors": "International development; all sectors"
+  },
+  {
+    "name": "DevelopmentAid",
+    "url": "https://www.developmentaid.org/",
+    "clientOpportunityType": "Donor-funded tenders, grants, jobs, consultancy and partner search",
+    "clientSectors": "International development; all sectors"
+  },
+  {
+    "name": "FundsforNGOs",
+    "url": "https://www.fundsforngos.org/",
+    "clientOpportunityType": "NGO grants, calls for proposals, fellowships and donor funding",
+    "clientSectors": "Civil society, health, education, gender, climate, community development"
+  },
+  {
+    "name": "KartiLink Opportunities",
+    "url": "https://www.kartilink.com/opportunities",
+    "clientOpportunityType": "Africa-wide tenders, RFPs, RFQs, grants and NGO opportunities",
+    "clientSectors": "Development, social impact, public interest and business services"
+  },
+  {
+    "name": "NigerianTenders",
+    "url": "https://www.nigeriantenders.com/",
+    "clientOpportunityType": "Tenders, bids, RFPs, RFQs and prequalification notices",
+    "clientSectors": "Government, oil and gas, construction and private sector"
+  },
+  {
+    "name": "Public Procurement NG",
+    "url": "https://publicprocurement.org/",
+    "clientOpportunityType": "Public-sector, oil and gas, government and private tender alerts",
+    "clientSectors": "Government, energy, infrastructure and professional services"
+  },
+  {
+    "name": "eTenders Nigeria",
+    "url": "https://etenders.com.ng/",
+    "clientOpportunityType": "Tenders, RFPs, RFQs and supplier alerts",
+    "clientSectors": "Government and private-sector opportunities"
+  },
+  {
+    "name": "Bank of Industry (BOI)",
+    "url": "https://www.boi.ng/",
+    "clientOpportunityType": "MSME finance, intervention funds, loans and enterprise support",
+    "clientSectors": "Manufacturing, agribusiness, services, technology and creative businesses"
+  },
+  {
+    "name": "Tony Elumelu Foundation (TEFConnect)",
+    "url": "https://tefconnect.com/",
+    "clientOpportunityType": "Seed capital, training, mentorship and business-support opportunities",
+    "clientSectors": "Entrepreneurship; SMEs across sectors including creative industries"
+  },
+  {
+    "name": "Lagos State Employment Trust Fund (LSETF)",
+    "url": "https://lsetf.ng/",
+    "clientOpportunityType": "Business finance, entrepreneurship and employability programmes",
+    "clientSectors": "Lagos SMEs, startups, creative businesses and job seekers"
+  },
+  {
+    "name": "SMEDAN",
+    "url": "https://smedan.gov.ng/",
+    "clientOpportunityType": "MSME support, training, empowerment and programme announcements",
+    "clientSectors": "MSMEs across sectors"
+  },
+  {
+    "name": "Nigeria Startup Portal",
+    "url": "https://startup.gov.ng/",
+    "clientOpportunityType": "Startup registration, incentives, ecosystem programmes and policy-linked opportunities",
+    "clientSectors": "Technology, digital innovation and startups"
+  },
+  {
+    "name": "Global South Opportunities",
+    "url": "https://www.globalsouthopportunities.com/",
+    "clientOpportunityType": "Funding, fellowships, scholarships, jobs, internships and calls for applications",
+    "clientSectors": "Global South; all sectors including development and creative industries"
+  },
+  {
+    "name": "Global South Opportunities - Funding",
+    "url": "https://www.globalsouthopportunities.com/category/funding/",
+    "clientOpportunityType": "Grants, seed funding, research funding and innovation challenges",
+    "clientSectors": "Social impact, research, startups and creative projects"
+  },
+  {
+    "name": "Global South Opportunities - Jobs",
+    "url": "https://www.globalsouthopportunities.com/category/jobs/",
+    "clientOpportunityType": "Jobs, remote roles and consultancy assignments",
+    "clientSectors": "Development, research, policy, communications and professional services"
+  },
+  {
+    "name": "Opportunity Desk",
+    "url": "https://opportunitydesk.org/",
+    "clientOpportunityType": "Scholarships, fellowships, grants, awards, jobs, internships and competitions",
+    "clientSectors": "Youth, education, leadership, entrepreneurship and social impact"
+  },
+  {
+    "name": "Opportunities for Youth",
+    "url": "https://opportunitiesforyouth.org/",
+    "clientOpportunityType": "Youth grants, fellowships, scholarships, startup programmes and internships",
+    "clientSectors": "Youth, education, entrepreneurship and social impact"
+  },
+  {
+    "name": "Youth Opportunities",
+    "url": "https://www.youthop.com/",
+    "clientOpportunityType": "Fellowships, scholarships, grants, conferences and internships",
+    "clientSectors": "Youth and professional development"
+  },
+  {
+    "name": "Opportunities for Africans",
+    "url": "https://www.opportunitiesforafricans.com/",
+    "clientOpportunityType": "African grants, scholarships, fellowships, jobs and calls for proposals",
+    "clientSectors": "Africa-focused; all sectors"
+  },
+  {
+    "name": "Creative Economy Development Fund (CEDF)",
+    "url": "https://cedf.gov.ng/",
+    "clientOpportunityType": "Grants, equity investment, loans and blended finance",
+    "clientSectors": "Film, music, fashion, art, gaming, publishing, cultural tourism and creative businesses"
+  },
+  {
+    "name": "NEXIM Creative and Entertainment Industry Loan Scheme",
+    "url": "https://neximbank.gov.ng/financial-facilities/nigerian-creative-and-entertainment-industry-loan-scheme/",
+    "clientOpportunityType": "Creative-industry loans and finance",
+    "clientSectors": "Music, film, TV, radio, fashion, entertainment production and distribution"
+  },
+  {
+    "name": "The Creative Fund",
+    "url": "https://thecreativefund.ncegii.org/",
+    "clientOpportunityType": "Creative project funding, technical support and programme calls",
+    "clientSectors": "Film, fashion, music and creative innovation"
+  },
+  {
+    "name": "British Council Nigeria",
+    "url": "https://www.britishcouncil.org.ng/",
+    "clientOpportunityType": "Arts/culture grants, collaborations, training and cultural-exchange calls",
+    "clientSectors": "Arts, culture, creative economy, education and youth"
+  },
+  {
+    "name": "Goethe-Institut Nigeria",
+    "url": "https://www.goethe.de/ins/ng/en/index.html",
+    "clientOpportunityType": "Cultural projects, artistic collaboration, residencies and training",
+    "clientSectors": "Arts, culture, film, music, design and cultural exchange"
+  },
+  {
+    "name": "Institut Français Nigeria",
+    "url": "https://www.institutfrancais-nigeria.com/",
+    "clientOpportunityType": "Cultural collaboration, mobility and creative-project calls",
+    "clientSectors": "Visual arts, film, music, literature, fashion and cultural exchange"
+  },
+  {
+    "name": "UNESCO International Fund for Cultural Diversity",
+    "url": "https://www.unesco.org/creativity/en/international-fund-cultural-diversity",
+    "clientOpportunityType": "Creative-industry grants and project funding",
+    "clientSectors": "Cultural policy, cultural entrepreneurship, creative industries, arts and media"
+  },
+  {
+    "name": "African Culture Fund",
+    "url": "https://www.africanculturefund.net/en/",
+    "clientOpportunityType": "Grants and project calls",
+    "clientSectors": "Performing arts, visual arts, cinema, audiovisual and cultural management"
+  },
+  {
+    "name": "African Culture Fund - Calls for Projects",
+    "url": "https://www.africanculturefund.net/en/call-for-projects-pages-acf/",
+    "clientOpportunityType": "Open calls, grants and cultural project funding",
+    "clientSectors": "Performing arts, visual arts, cinema and audiovisual"
+  },
+  {
+    "name": "Prince Claus Fund",
+    "url": "https://princeclausfund.nl/",
+    "clientOpportunityType": "Grants, awards and cultural-development support",
+    "clientSectors": "Arts, culture, heritage and cultural practice"
+  },
+  {
+    "name": "Prince Claus Fund Seed Award",
+    "url": "https://princeclausfund.nl/awards-and-programmes/seed-award",
+    "clientOpportunityType": "Small grants for emerging artists and cultural practitioners",
+    "clientSectors": "Arts, culture and emerging creative practice"
+  },
+  {
+    "name": "British Council Arts - Sub-Saharan Africa",
+    "url": "https://arts.britishcouncil.org/what-we-do/sub-saharan-africa",
+    "clientOpportunityType": "Collaboration, creative-sector development and capacity-building calls",
+    "clientSectors": "Arts, culture, creative economy and policy"
+  },
+  {
+    "name": "Africa-Europe Partnerships for Culture",
+    "url": "https://www.goethe.de/prj/aep/en/",
+    "clientOpportunityType": "Cultural partnerships, networking and creative-enterprise support",
+    "clientSectors": "Africa-Europe arts, culture and creative industries"
+  },
+  {
+    "name": "Africalia - Creative Africa",
+    "url": "https://africalia.be/en/creative-africa/",
+    "clientOpportunityType": "Creative-enterprise support, incubation and business development",
+    "clientSectors": "Cultural and creative enterprises"
+  },
+  {
+    "name": "ArtConnect Funding Africa",
+    "url": "https://www.magazine.artconnect.com/funding/africa",
+    "clientOpportunityType": "Arts grants, residencies, exhibitions and open calls",
+    "clientSectors": "Visual arts, contemporary art and creative practice"
+  },
+  {
+    "name": "Trybe Africa",
+    "url": "https://trybeafrica.com/",
+    "clientOpportunityType": "Paid creative opportunities, commissions, jobs and collaborations",
+    "clientSectors": "African creative industries"
+  },
+  {
+    "name": "Art Residency Africa",
+    "url": "https://artresidencyafrica.com/",
+    "clientOpportunityType": "Residencies, grants, exhibitions and workshops",
+    "clientSectors": "Artists, curators and creative practitioners"
+  },
+  {
+    "name": "On the Move",
+    "url": "https://on-the-move.org/",
+    "clientOpportunityType": "Mobility funding, residencies, touring and exchanges",
+    "clientSectors": "International arts, culture and cultural mobility"
+  },
+  {
+    "name": "Sundance Institute",
+    "url": "https://www.sundance.org/programs/",
+    "clientOpportunityType": "Film development labs, grants and fellowships",
+    "clientSectors": "Independent film, screenwriting and documentary"
+  },
+  {
+    "name": "IDFA Bertha Fund",
+    "url": "https://www.idfa.nl/en/industry/idfa-bertha-fund",
+    "clientOpportunityType": "Documentary development, production and post-production support",
+    "clientSectors": "Documentary film"
+  },
+  {
+    "name": "Hubert Bals Fund",
+    "url": "https://iffr.com/en/industry/hubert-bals-fund",
+    "clientOpportunityType": "Script, development, production and post-production support",
+    "clientSectors": "Feature film and cinema"
+  },
+  {
+    "name": "Doc Society",
+    "url": "https://docsociety.org/funds/",
+    "clientOpportunityType": "Documentary funds, impact campaigns and grants",
+    "clientSectors": "Documentary film and social-change storytelling"
+  },
+  {
+    "name": "Chicken & Egg Pictures",
+    "url": "https://chickeneggpics.org/",
+    "clientOpportunityType": "Documentary funding, mentorship and support",
+    "clientSectors": "Documentary film; women and non-binary filmmakers"
+  },
+  {
+    "name": "Netflix Fund for Creative Equity",
+    "url": "https://about.netflix.com/en/news/netflix-fund-for-creative-equity",
+    "clientOpportunityType": "Training, skills development and access programmes",
+    "clientSectors": "Film, TV and screen-sector talent development"
+  },
+  {
+    "name": "Africa No Filter",
+    "url": "https://africanofilter.org/",
+    "clientOpportunityType": "Narrative-change grants, storytelling, research and media support",
+    "clientSectors": "Media, storytelling, culture, research and communications"
+  },
+  {
+    "name": "U.S. Mission to Nigeria Grants",
+    "url": "https://ng.usembassy.gov/grants/",
+    "clientOpportunityType": "Public diplomacy and civil-society grants",
+    "clientSectors": "Youth, education, inclusion, community development, media and culture"
+  },
+  {
+    "name": "U.S. Ambassadors Fund for Cultural Preservation",
+    "url": "https://ng.usembassy.gov/ambassadors-fund-for-cultural-preservation/",
+    "clientOpportunityType": "Cultural preservation grants",
+    "clientSectors": "Heritage sites, collections, manuscripts, archaeology and intangible culture"
+  },
+  {
+    "name": "EU Delegation to Nigeria and ECOWAS",
+    "url": "https://www.eeas.europa.eu/nigeria_en",
+    "clientOpportunityType": "Calls for proposals, grants, partnerships and programme announcements",
+    "clientSectors": "Governance, human rights, culture, climate, innovation and civil society"
+  },
+  {
+    "name": "British High Commission Abuja",
+    "url": "https://www.gov.uk/world/organisations/british-high-commission-abuja",
+    "clientOpportunityType": "Programme notices, partnerships and development announcements",
+    "clientSectors": "Development, governance, trade, culture and education"
+  },
+  {
+    "name": "UK International Development Funding",
+    "url": "https://www.gov.uk/international-development-funding",
+    "clientOpportunityType": "UK ODA funding opportunities and competitive calls",
+    "clientSectors": "International development; all sectors"
+  },
+  {
+    "name": "High Commission of Canada in Nigeria",
+    "url": "https://www.international.gc.ca/country-pays/nigeria/index.aspx?lang=eng",
+    "clientOpportunityType": "Development, partnership and grant announcements",
+    "clientSectors": "Governance, inclusion, climate, community development and trade"
+  },
+  {
+    "name": "Canada Fund for Local Initiatives",
+    "url": "https://www.international.gc.ca/world-monde/funding-financement/cfli-fcil/index.aspx?lang=eng",
+    "clientOpportunityType": "Small grants for local civil-society organisations",
+    "clientSectors": "Community development, inclusion, human rights, climate and governance"
+  },
+  {
+    "name": "German Missions Nigeria",
+    "url": "https://nigeria.diplo.de/ng-en",
+    "clientOpportunityType": "Cultural, academic and development-partnership information",
+    "clientSectors": "Culture, education, development and research"
+  },
+  {
+    "name": "Embassy of France in Nigeria",
+    "url": "https://ng.ambafrance.org/",
+    "clientOpportunityType": "Cultural cooperation, research and project-partnership information",
+    "clientSectors": "Culture, arts, education, research and creative industries"
+  },
+  {
+    "name": "Embassy of Japan in Nigeria",
+    "url": "https://www.ng.emb-japan.go.jp/itprtop_en/index.html",
+    "clientOpportunityType": "Grassroots project grants and cultural exchange",
+    "clientSectors": "Community development, education, heritage and culture"
+  },
+  {
+    "name": "Netherlands and Nigeria",
+    "url": "https://www.netherlandsandyou.nl/your-country-and-the-netherlands/nigeria",
+    "clientOpportunityType": "Private-sector, development and innovation opportunities",
+    "clientSectors": "Water, agriculture, climate, governance and innovation"
+  },
+  {
+    "name": "Australian High Commission Nigeria",
+    "url": "https://nigeria.embassy.gov.au/",
+    "clientOpportunityType": "Scholarships, development announcements and partnerships",
+    "clientSectors": "Education, development and regional cooperation"
+  },
+  {
+    "name": "Embassy of Switzerland in Nigeria",
+    "url": "https://www.eda.admin.ch/countries/nigeria/en/home/representations/embassy.html",
+    "clientOpportunityType": "Humanitarian, cultural and development-partnership information",
+    "clientSectors": "Humanitarian action, peacebuilding, governance and culture"
+  },
+  {
+    "name": "Nigeria Film Corporation",
+    "url": "https://nfc.gov.ng/",
+    "clientOpportunityType": "Industry programmes, training, festivals and notices",
+    "clientSectors": "Film and screen industries"
+  },
+  {
+    "name": "National Film and Video Censors Board",
+    "url": "https://nfvcb.gov.ng/",
+    "clientOpportunityType": "Industry notices, policy and capacity-building information",
+    "clientSectors": "Film, video and screen industries"
+  },
+  {
+    "name": "National Council for Arts and Culture",
+    "url": "https://ncac.gov.ng/",
+    "clientOpportunityType": "Cultural programmes, exhibitions, heritage and crafts opportunities",
+    "clientSectors": "Arts, culture, heritage and crafts"
+  }
+]

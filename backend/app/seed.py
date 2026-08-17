@@ -12,6 +12,7 @@ from pathlib import Path
 from sqlmodel import Session, select
 
 from app.db import engine, init_db
+from app.importer import import_client_sources
 from app.models import (
     BusinessUnit,
     Opportunity,
@@ -116,6 +117,23 @@ def seed_sources(session: Session) -> int:
             )
         )
     return len(rows)
+
+
+def seed_client_sources(session: Session) -> int:
+    """Merge the client's 81 platforms in — ONCE, on a database that has none.
+
+    The import itself is idempotent and safe to re-run, so running it on every
+    boot would be harmless for row counts. It is deliberately NOT done, because
+    idempotent is not the same as inert: the import CREATES rows, so a source
+    somebody deliberately deleted would silently reappear at the next restart,
+    and they would have no way to make the deletion stick.
+
+    So: automatic on a database that has never seen her list, manual after
+    that. `uv run python -m app.importer` re-runs it by hand.
+    """
+    if session.exec(select(Source).where(Source.provenance == "client_import")).first():
+        return 0
+    return import_client_sources(session)["created"]
 
 
 def seed_profiles_and_orgs(session: Session) -> tuple[int, int]:
@@ -307,6 +325,7 @@ def run() -> dict[str, int]:
         units = seed_business_units(session)
         opps = seed_opportunities(session)
         srcs = seed_sources(session)
+        imported = seed_client_sources(session)
         profiles, orgs = seed_profiles_and_orgs(session)
         generated_pw = seed_admin_user(session)
         # Strictly after the admin: seed_admin_user bails if ANY user exists,
@@ -332,6 +351,7 @@ def run() -> dict[str, int]:
         "business_units": units,
         "opportunities": opps,
         "sources": srcs,
+        "client_sources": imported,
         "profiles": profiles,
         "organisations": orgs,
         "test_accounts": len(test_users),
