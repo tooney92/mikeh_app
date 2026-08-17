@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, BackgroundTasks, Depends
@@ -19,19 +20,43 @@ def _run_scan(run_id: int) -> None:
     records a real job lifecycle so the Radar's status panel has something true
     to poll. Swap the body for the real work; the status contract stays.
     """
-    with Session(engine) as session:
-        run = session.get(ScanRun, run_id)
-        if not run:
-            return
-        active = session.exec(
-            select(Source).where(Source.active == True)  # noqa: E712
-        ).all()
-        run.sources_swept = len(active)
-        run.scored = len(session.exec(select(Opportunity)).all())
-        run.status = "complete"
-        run.finished_at = datetime.now(timezone.utc)
-        session.add(run)
-        session.commit()
+    try:
+        with Session(engine) as session:
+            run = session.get(ScanRun, run_id)
+            if not run:
+                return
+            active = session.exec(
+                select(Source).where(Source.active == True)  # noqa: E712
+            ).all()
+            run.sources_swept = len(active)
+            run.scored = len(session.exec(select(Opportunity)).all())
+            run.status = "complete"
+            run.finished_at = datetime.now(timezone.utc)
+            session.add(run)
+            session.commit()
+    except Exception:
+        # A run that raises must not stay "running" forever. The frontend
+        # disables its Run button for ANY status that is not idle or complete,
+        # and it polls only from inside the handler that button fires — so a
+        # wedged "running" row disables scanning for everybody, permanently,
+        # with nothing left able to poll it back to life.
+        #
+        # Today the body cannot realistically fail; once it is a real crawler
+        # hitting eighty-odd websites, failing will be routine. Recording the
+        # terminal state is what keeps the status honest either way.
+        logging.getLogger(__name__).exception("scan run %s failed", run_id)
+        try:
+            with Session(engine) as session:
+                run = session.get(ScanRun, run_id)
+                if run and run.status == "running":
+                    run.status = "failed"
+                    run.finished_at = datetime.now(timezone.utc)
+                    session.add(run)
+                    session.commit()
+        except Exception:  # pragma: no cover - the database itself is gone
+            logging.getLogger(__name__).exception(
+                "could not mark scan run %s failed", run_id
+            )
 
 
 def _latest(session: Session) -> ScanRun | None:

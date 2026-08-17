@@ -445,3 +445,47 @@ def test_the_fingerprint_does_not_expose_the_hash(client):
     assert password_fingerprint(hash_password("some-password")) != fp, (
         "Argon2 salts, so a re-hash of the same password is a different version"
     )
+
+
+# --- finding 10 (the backend half): a failed scan must not wedge "running" ---
+
+
+def test_a_failing_scan_run_records_failed_not_running(client, monkeypatch):
+    """The frontend disables Run for ANY status that is not idle/complete, and
+    polls only from inside the handler that button fires. So a run left
+    "running" disables scanning for everybody, permanently, with nothing able to
+    poll it back. Today the body cannot realistically fail; once it is a real
+    crawler over eighty websites, failing is routine.
+    """
+    from sqlmodel import Session
+
+    from app.db import engine
+    from app.models import ScanRun
+    from app.routers import scan
+
+    with Session(engine) as s:
+        run = ScanRun(status="running")
+        s.add(run)
+        s.commit()
+        s.refresh(run)
+        run_id = run.id
+
+    def _boom(*_a, **_k):
+        raise RuntimeError("source unreachable")
+
+    # Fail INSIDE the try block, leaving Session itself intact so the recovery
+    # path can still reach the database to record the terminal state.
+    monkeypatch.setattr(scan, "select", _boom)
+    scan._run_scan(run_id)
+    monkeypatch.undo()
+
+    with Session(engine) as s:
+        assert s.get(ScanRun, run_id).status == "failed"
+        assert s.get(ScanRun, run_id).finished_at is not None
+
+
+def test_a_successful_scan_still_completes(client):
+    started = client.post("/api/scan", headers=tok(client, "admin"))
+    assert started.status_code == 202, started.text
+    status = client.get("/api/scan/status", headers=tok(client, "admin")).json()
+    assert status["status"] == "complete", status
