@@ -237,7 +237,10 @@ def get_opportunity(
         reverse=True,
     )
 
-    unit_ids = user.unit_ids
+    # NOT `unit_ids = user.unit_ids`, which shadowed the viewer_scope result
+    # above with an identical-for-scoped-users, empty-for-admins value. It
+    # happened to be harmless, and it sat directly above the decision lookup
+    # that now depends on unit_ids meaning what viewer_scope said it means.
     if unit_ids:
         out.your_fit_percent = max(
             (s.fit_percent for s in out.scores if s.business_unit_id in unit_ids),
@@ -245,12 +248,31 @@ def get_opportunity(
         )
     out.top_fit_percent = max((s.fit_percent for s in out.scores), default=None)
 
-    latest = session.exec(
+    # Scoped like /api/decisions, which was scoped in the same commit that left
+    # this one open. The reason text is the sensitive half: a Reject requires a
+    # reason and those are commercially candid by design, so a TM Foundation
+    # lead was reading Takeout Media's justification for walking away — the
+    # exact thing _log() was changed to prevent, still reachable one endpoint
+    # over on eight seeded opportunities.
+    #
+    # It was also just wrong on its face. Showing TF "Rejected" for a call
+    # Takeout made states that TF rejected it, on TF's own screen.
+    #
+    # An unattributed decision (no unit) is visible to anyone entitled to the
+    # opportunity: it is a company-level call, and entitlement here already
+    # follows the opportunity rather than the unit.
+    decisions = session.exec(
         select(Decision)
         .where(Decision.opportunity_id == opportunity_id)
         .order_by(Decision.created_at.desc())
-    ).first()
-    if latest:
-        out.decision = latest.decision
-        out.decision_reason = latest.reason
+    ).all()
+    if scoped:
+        decisions = [
+            d
+            for d in decisions
+            if d.business_unit_id is None or d.business_unit_id in unit_ids
+        ]
+    if decisions:
+        out.decision = decisions[0].decision
+        out.decision_reason = decisions[0].reason
     return out

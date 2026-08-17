@@ -37,6 +37,55 @@ def _fits(session: Session) -> dict[str, dict[int, int]]:
     return out
 
 
+def _units_by_opportunity(session: Session) -> dict[str, set[int]]:
+    """opportunity_id -> the units that have a score on it.
+
+    Which units an unattributed decision is visible to: entitlement follows the
+    opportunity, the same rule the detail endpoint uses.
+    """
+    out: dict[str, set[int]] = {}
+    for s in session.exec(select(OpportunityScore)).all():
+        out.setdefault(s.opportunity_id, set()).add(s.business_unit_id)
+    return out
+
+
+def visible_decisions(
+    session: Session, unit_ids: list[int] | None, newest_first: bool = False
+) -> list[Decision]:
+    """Which decisions this viewer may read. `unit_ids` None means unscoped.
+
+    ONE definition, used by both /api/decisions and /api/learning. They each had
+    their own copy of `d.business_unit_id in unit_ids` and both carried the same
+    bug, which is the argument for this function existing rather than for fixing
+    it twice.
+
+    An UNATTRIBUTED decision (no unit) belongs to whoever is entitled to the
+    OPPORTUNITY, not to nobody. `in unit_ids` is False for NULL, so a director's
+    company-level "Pursue" on a TM Foundation opportunity never reached that
+    unit's log, breakdown or decisionsLogged — while log_decision deliberately
+    ALLOWS an unscoped user to omit the unit. The write path and the read path
+    disagreed about what an unattributed decision means.
+
+    Every Decision row predating the business_unit_id column is NULL as well, so
+    on any database with history each lead's Learning page read zero.
+    """
+    stmt = select(Decision)
+    if newest_first:
+        stmt = stmt.order_by(Decision.created_at.desc())
+    rows = list(session.exec(stmt).all())
+    if unit_ids is None:
+        return rows
+
+    mine = set(unit_ids)
+    scored = _units_by_opportunity(session)
+    return [
+        d
+        for d in rows
+        if d.business_unit_id in mine
+        or (d.business_unit_id is None and scored.get(d.opportunity_id, set()) & mine)
+    ]
+
+
 def _fit_for(d: Decision, fits: dict[str, dict[int, int]]) -> int | None:
     """The deciding unit's fit, else the best fit on that opportunity."""
     by_unit = fits.get(d.opportunity_id)
@@ -55,9 +104,7 @@ def _log(session: Session, unit_ids: list[int] | None = None) -> list[DecisionOu
     unit and these did not, so a TM Foundation lead could read Takeout Media's
     rejection reasons, which are commercially candid by design.
     """
-    rows = session.exec(select(Decision).order_by(Decision.created_at.desc())).all()
-    if unit_ids is not None:
-        rows = [d for d in rows if d.business_unit_id in unit_ids]
+    rows = visible_decisions(session, unit_ids, newest_first=True)
     opps = {o.id: o for o in session.exec(select(Opportunity)).all()}
     fits = _fits(session)
     return [
@@ -132,6 +179,11 @@ def log_decision(
         business_unit_id=unit_id,
         decision=payload.decision,
         reason=payload.reason if payload.decision == "Reject" else None,
+        # The column existed on the model and nothing ever wrote it, so "who
+        # made this call" was unanswerable on a table whose whole purpose is
+        # recording who decided what. The Learning page's credibility rests on
+        # these rows being attributable.
+        user_id=user.id,
     )
     session.add(d)
     session.commit()
@@ -158,9 +210,7 @@ def learning(
     statistic from the one the page claims to show.
     """
     scoped, unit_ids = viewer_scope(user)
-    decisions = session.exec(select(Decision)).all()
-    if scoped:
-        decisions = [d for d in decisions if d.business_unit_id in unit_ids]
+    decisions = visible_decisions(session, unit_ids if scoped else None)
     opps = {o.id: o for o in session.exec(select(Opportunity)).all()}
 
     # "Avg fit pursued" means the fit for the unit that made the call, falling

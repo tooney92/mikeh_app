@@ -21,7 +21,13 @@ from app.models import (
     User,
 )
 from app.schemas import PriorityAction
-from app.scoring import joint_pitch_note, joint_pitch_scores, viewer_scope
+from app.scoring import (
+    clears_bar,
+    joint_pitch_note,
+    joint_pitch_scores,
+    unit_bars,
+    viewer_scope,
+)
 
 router = APIRouter(prefix="/api", tags=["radar"])
 
@@ -48,10 +54,23 @@ def priority_actions(
     actions: list[PriorityAction] = []
 
     # 1. Opportunities worth acting on — high relevance, best fit first.
+    # The viewing unit's own bar, exactly as the list and the radar apply it.
+    # Without this, a HIGH-relevance opportunity scoring 45 against a bar of 60
+    # was ANNOUNCED here as a priority action at "45% fit" while the tiles above
+    # it and the list below it both excluded it — the dashboard contradicting
+    # the list on one screen refresh, which is the failure radar.py's own
+    # docstring calls worse than either number alone.
+    #
+    # No include_weak here on purpose: this section is "what should I act on",
+    # and the escape hatch belongs where the rows are, not where the summary is.
+    thresholds = unit_bars(session, unit_ids) if scoped else {}
+
     ranked = []
     for opp_id, scores in by_opp.items():
         mine = [s for s in scores if s.business_unit_id in unit_ids]
         if scoped and not mine:
+            continue
+        if mine and not clears_bar(mine, thresholds):
             continue
         opp = opps.get(opp_id)
         if not opp or opp.relevance != "HIGH":

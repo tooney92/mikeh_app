@@ -64,7 +64,9 @@ class AdminAuth(AuthenticationBackend):
                 or not verify_password(password, user.hashed_password)
             ):
                 return False
-            request.session["token"] = create_access_token(user.id, {"admin": True})
+            request.session["token"] = create_access_token(
+                user.id, {"admin": True}, hashed_password=user.hashed_password
+            )
         return True
 
     async def logout(self, request: Request) -> bool:
@@ -103,7 +105,54 @@ class AdminAuth(AuthenticationBackend):
         return True
 
 
-class UserAdmin(ModelView, model=User):
+def _held_codenames(request: Request) -> set[str]:
+    """What the signed-in back-office user holds RIGHT NOW.
+
+    Re-read per request for the same reason `authenticate` re-reads: a token's
+    claims are frozen for 12 hours and a revoked grant must take effect now.
+    """
+    token = request.session.get("token")
+    payload = decode_access_token(token) if token else None
+    if not payload:
+        return set()
+    try:
+        user_id = int(payload.get("sub", ""))
+    except (TypeError, ValueError):
+        return set()
+    with Session(engine) as session:
+        user = session.get(User, user_id)
+        if not user or not user.is_active or not user.role:
+            return set()
+        return {p.codename for p in user.role.permissions}
+
+
+class RequiresCodename:
+    """A ModelView that needs MORE than admin:access to reach.
+
+    The back office was gated on admin:access alone, but rbac.CRITICAL treats
+    admin:access, role:update and user:update as three SEPARABLE permissions.
+    Granting a lead admin:access so they could look at the dashboard therefore
+    handed them full CRUD on User and Role — including setting the admin's
+    password — while the API path for the same act 403s on
+    requires("user:update"). Two enforcement paths disagreeing about who may
+    administer is the kind of gap that only shows up after somebody uses it.
+
+    Mixed in FIRST so these override sqladmin's permissive defaults.
+    """
+
+    required_codename: str = ""
+
+    def is_accessible(self, request: Request) -> bool:
+        return self.required_codename in _held_codenames(request)
+
+    def is_visible(self, request: Request) -> bool:
+        # Hidden from the menu as well as blocked, so a lead is not shown a
+        # section that refuses them — the same rule as the Sources split.
+        return self.is_accessible(request)
+
+
+class UserAdmin(RequiresCodename, ModelView, model=User):
+    required_codename = "user:update"
     name_plural = "Users"
     icon = "fa-solid fa-user"
     column_list = [
@@ -196,7 +245,47 @@ def _guard_last_admin_on_user_change(model: User, data: dict) -> None:
                 )
 
 
-class RoleAdmin(ModelView, model=Role):
+def _codenames_from_form(raw) -> set[str]:
+    """Codenames out of whatever sqladmin's permission field handed us.
+
+    THE BUG THIS EXISTS FOR: sqladmin's QuerySelectMultipleField.data returns
+    PRIMARY KEY STRINGS, not Permission objects — see sqladmin/fields.py, which
+    does `data.append(pk)` straight from its (pk, label) pairs. So the old
+    `p.codename if hasattr(p, "codename") else str(p)` produced {"1", "2", ...},
+    "admin:access" was never in it, the "still an administering role" early
+    return could never fire, and the lockout guard ran on EVERY edit of the
+    admin role. Changing only its LABEL, with all 40 permissions still ticked,
+    was refused as though it were being stripped of its powers. The admin role
+    could not be edited at all — and editing it is the remedy on_model_delete
+    tells you to use.
+
+    The tests passed real ORM objects, so they exercised a path the HTML form
+    never takes. Both shapes are handled here because programmatic callers do
+    pass objects.
+    """
+    codenames: set[str] = set()
+    ids: list[int] = []
+    for p in raw or []:
+        if hasattr(p, "codename"):
+            codenames.add(p.codename)
+            continue
+        try:
+            ids.append(int(p))
+        except (TypeError, ValueError):
+            continue  # neither an object nor a usable id — cannot grant anything
+    if ids:
+        with Session(engine) as session:
+            codenames.update(
+                p.codename
+                for p in session.exec(
+                    select(Permission).where(Permission.id.in_(ids))
+                ).all()
+            )
+    return codenames
+
+
+class RoleAdmin(RequiresCodename, ModelView, model=Role):
+    required_codename = "role:update"
     name_plural = "Roles"
     icon = "fa-solid fa-shield-halved"
     column_list = [Role.id, Role.name, Role.label, Role.scope, Role.is_system]
@@ -207,10 +296,7 @@ class RoleAdmin(ModelView, model=Role):
     async def on_model_change(self, data, model, is_created, request) -> None:
         if is_created:
             return
-        held = {
-            p.codename if hasattr(p, "codename") else str(p)
-            for p in (data.get("permissions") or [])
-        }
+        held = _codenames_from_form(data.get("permissions"))
         if all(c in held for c in CRITICAL):
             return  # still an administering role, nothing to protect against
 
@@ -244,7 +330,11 @@ class RoleAdmin(ModelView, model=Role):
             )
 
 
-class PermissionAdmin(ModelView, model=Permission):
+class PermissionAdmin(RequiresCodename, ModelView, model=Permission):
+    # Already read-only below, so this is not an escalation path — but
+    # /api/permissions requires role:read, and the two paths agreeing about who
+    # may see the codename catalogue is the point of finding 4.
+    required_codename = "role:read"
     name_plural = "Permissions"
     icon = "fa-solid fa-key"
     column_list = [Permission.id, Permission.codename, Permission.resource, Permission.action]

@@ -8,7 +8,7 @@ from sqlmodel import Session
 
 from app.db import get_session
 from app.models import User
-from app.security import decode_access_token
+from app.security import decode_access_token, password_fingerprint
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
@@ -29,6 +29,20 @@ def current_user(
     user = session.get(User, int(payload["sub"]))
     if not user:
         raise CREDENTIALS_ERROR
+
+    # The token must still match the password it was issued against, so changing
+    # a password signs that user's other sessions out immediately instead of
+    # leaving them live for the rest of the 12-hour TTL. See
+    # security.password_fingerprint for why this needs no new column.
+    #
+    # A token carrying NO `pwd` claim is one issued before this existed. Those
+    # are refused rather than grandfathered: the whole point is that an
+    # outstanding token stops working, and honouring the old shape would leave
+    # exactly the tokens this protects against in force. The cost is that
+    # everyone signs in again once.
+    if payload.get("pwd") != password_fingerprint(user.hashed_password):
+        raise CREDENTIALS_ERROR
+
     if not user.is_active:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "account is deactivated")
     return user

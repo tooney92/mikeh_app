@@ -96,7 +96,9 @@ def login(payload: LoginRequest, session: Session = Depends(get_session)):
 
     return TokenOut(
         access_token=create_access_token(
-            user.id, {"admin": user.can("admin:access")}
+            user.id,
+            {"admin": user.can("admin:access")},
+            hashed_password=user.hashed_password,
         ),
         expires_in=TOKEN_TTL_HOURS * 3600,
     )
@@ -121,6 +123,11 @@ def change_password(
     user.hashed_password = hash_password(payload.new_password)
     session.add(user)
     session.commit()
+    # NOTE: this signs the caller out too — their own bearer token no longer
+    # matches the new hash. That is the correct trade: "changed my password"
+    # meaning "every session including this one re-authenticates" is the
+    # behaviour people expect from it, and the alternative is a carve-out that
+    # would also spare a stolen token.
 
 
 @router.get("/users", response_model=list[UserOut])
