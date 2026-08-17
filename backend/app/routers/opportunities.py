@@ -12,7 +12,13 @@ from app.models import (
     User,
 )
 from app.schemas import OpportunityDetail, OpportunitySummary, ScoreOut
-from app.scoring import clears_bar, joint_pitch_note, joint_pitch_scores, unit_bars
+from app.scoring import (
+    clears_bar,
+    joint_pitch_note,
+    joint_pitch_scores,
+    unit_bars,
+    viewer_scope,
+)
 
 router = APIRouter(prefix="/api/opportunities", tags=["opportunities"])
 
@@ -58,6 +64,15 @@ def list_opportunities(
         ),
     ),
     limit: int | None = Query(None, ge=1, le=200),
+    # camelCase spellings of the two parameters above, accepted so the trap
+    # stops existing rather than being documented in four places. FastAPI
+    # silently ignores an unrecognised query parameter, so ?businessUnitId=2
+    # returned 200 with the FULL unfiltered list — a wrong answer that looks
+    # right, which is the worst failure mode available. Every response body is
+    # camelCase, so reaching for it is the natural mistake, and both agents made
+    # it. Hidden from the schema: snake_case remains the documented spelling.
+    businessUnitId: int | None = Query(None, include_in_schema=False),  # noqa: N803
+    includeWeak: bool | None = Query(None, include_in_schema=False),  # noqa: N803
     session: Session = Depends(get_session),
     user: User = Depends(current_user),
 ):
@@ -70,6 +85,11 @@ def list_opportunities(
     Unit selection sits on its OWN axis, deliberately: `filter` stays a closed
     enum of cross-cutting categories, and the unit is a separate parameter.
     """
+    if business_unit_id is None:
+        business_unit_id = businessUnitId
+    if includeWeak is not None:
+        include_weak = include_weak or includeWeak
+
     key = filter.lower()
     if key not in FILTERS:
         raise HTTPException(400, f"unknown filter '{filter}'")
@@ -82,8 +102,12 @@ def list_opportunities(
     # to what. A director has scope "all" and is never filtered. A lead may
     # belong to SEVERAL units — one person heads both Takeout Media and TM
     # Foundation — so this is a set, not a single id.
-    unit_ids = user.unit_ids
-    scoped = bool(unit_ids)
+    scoped, unit_ids = viewer_scope(user)
+
+    # Scoped but belonging to nowhere sees nothing. Previously this fell through
+    # as "unscoped" and showed them everything.
+    if scoped and not unit_ids:
+        return []
 
     # Only someone unscoped can narrow — a lead asking for another unit's list
     # is silently ignored rather than granted, since scope is not theirs to widen.
@@ -158,6 +182,21 @@ def get_opportunity(
     rows = session.exec(
         select(OpportunityScore).where(OpportunityScore.opportunity_id == opportunity_id)
     ).all()
+
+    # Same row rule as the list: an opportunity none of your units scored is not
+    # yours to open. Detail previously required only a valid token, so a Design
+    # Teem lead whose list and priority actions were both empty could still
+    # fetch any opportunity by its slug — and the slugs are guessable.
+    #
+    # This is NOT the fit threshold. A below-bar row is still openable by URL:
+    # the bar is about attention, and this is about entitlement. What changed is
+    # that having NO score in any of your units now means 404, matching the list.
+    #
+    # 404 rather than 403, and the same wording as a genuinely missing row, so
+    # the response does not confirm that an id exists.
+    scoped, unit_ids = viewer_scope(user)
+    if scoped and not any(s.business_unit_id in unit_ids for s in rows):
+        raise HTTPException(404, "opportunity not found")
 
     # model_dump() gives the columns only — validating the ORM object directly
     # would drag in the `scores` relationship, whose rows lack the unit name

@@ -21,7 +21,7 @@ from app.models import (
     User,
 )
 from app.schemas import PriorityAction
-from app.scoring import joint_pitch_note, joint_pitch_scores
+from app.scoring import joint_pitch_note, joint_pitch_scores, viewer_scope
 
 router = APIRouter(prefix="/api", tags=["radar"])
 
@@ -33,8 +33,10 @@ def priority_actions(
     user: User = Depends(current_user),
 ):
     """Scoped like the opportunity list: a lead sees their units' actions."""
-    unit_ids = user.unit_ids
-    scoped = bool(unit_ids)
+    scoped, unit_ids = viewer_scope(user)
+    if scoped and not unit_ids:
+        # Belongs to no unit: no actions are theirs.
+        return []
 
     units = {u.id: u for u in session.exec(select(BusinessUnit)).all()}
     opps = {o.id: o for o in session.exec(select(Opportunity)).all()}

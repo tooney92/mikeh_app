@@ -11,7 +11,7 @@ from app.models import (
     User,
 )
 from app.schemas import RadarStats
-from app.scoring import clears_bar, unit_bars
+from app.scoring import clears_bar, unit_bars, viewer_scope
 
 router = APIRouter(prefix="/api", tags=["radar"])
 
@@ -36,6 +36,7 @@ def radar(
             "the list can be asked the same question."
         ),
     ),
+    includeWeak: bool | None = Query(None, include_in_schema=False),  # noqa: N803
     session: Session = Depends(get_session),
     user: User = Depends(current_user),
 ):
@@ -51,12 +52,17 @@ def radar(
     only, and only those clearing your units' bars. An admin or director has no
     unit and is unscoped, so they still see totals across everything.
     """
-    unit_ids = user.unit_ids
-    scoped = bool(unit_ids)
+    if includeWeak is not None:
+        include_weak = include_weak or includeWeak
+
+    scoped, unit_ids = viewer_scope(user)
     bars = unit_bars(session, unit_ids) if scoped and not include_weak else {}
 
     all_opps = session.exec(select(Opportunity)).all()
-    if scoped:
+    if scoped and not unit_ids:
+        # Belongs to no unit: nothing is theirs to count.
+        opps = []
+    elif scoped:
         by_opp: dict[str, list[OpportunityScore]] = {}
         for s in session.exec(select(OpportunityScore)).all():
             by_opp.setdefault(s.opportunity_id, []).append(s)

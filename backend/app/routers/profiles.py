@@ -46,11 +46,22 @@ def update_profile(
     profile_id: int,
     payload: ProfileUpdate,
     session: Session = Depends(get_session),
-    _: User = Depends(requires("profile:update")),
+    user: User = Depends(requires("profile:update")),
 ):
     profile = session.get(Profile, profile_id)
     if not profile:
         raise HTTPException(404, "profile not found")
+
+    # The GRANT says you may edit a profile; SCOPE says whose. Both apply, and
+    # only the grant was being checked — a lead of TM Foundation could rewrite
+    # Takeout Media's positioning and credentials.
+    #
+    # Since min_fit_percent landed here, that is worse than untidy: setting
+    # another unit's bar to 99 silently empties their opportunity list and their
+    # radar tiles, from a screen they never see, with no error anywhere.
+    if not user.sees_all_units and profile.business_unit_id not in user.unit_ids:
+        raise HTTPException(403, "that profile belongs to another business unit")
+
     for field, value in payload.model_dump(exclude_unset=True).items():
         setattr(profile, field, value)
     session.add(profile)
@@ -58,6 +69,11 @@ def update_profile(
     session.refresh(profile)
 
     unit = session.get(BusinessUnit, profile.business_unit_id)
+    if not unit:
+        # Its business unit was deleted in /admin, orphaning this row. The list
+        # endpoint skips such profiles; without this the response builder would
+        # dereference None and 500.
+        raise HTTPException(404, "that profile's business unit no longer exists")
     return _to_out(profile, unit)
 
 

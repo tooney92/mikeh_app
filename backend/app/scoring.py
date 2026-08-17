@@ -23,6 +23,28 @@ from app.models import BusinessUnit, OpportunityScore, Profile
 JOINT_PITCH_FLOOR = 60
 
 
+def viewer_scope(user) -> tuple[bool, list[int]]:
+    """(is_scoped, unit_ids) for this viewer. Derived from ROLE, not emptiness.
+
+    This used to be `scoped = bool(user.unit_ids)`, which fails OPEN. unit_ids
+    is empty for two completely different people: a director who sees
+    everything by scope, and a member whose unit box was never ticked. Deriving
+    from emptiness cannot tell them apart, so the second was silently treated
+    like the first and shown every unit's opportunities, pipeline value and
+    priority actions.
+
+    That was not a rare edge case. The /admin user form makes business_units
+    OPTIONAL, so it is the default state of every account created without
+    remembering to tick a unit.
+
+    A scoped user with no units now sees NOTHING, which is the honest reading
+    of "you see your units' rows" when you belong to no units.
+    """
+    if user.sees_all_units:
+        return False, []
+    return True, list(user.unit_ids)
+
+
 def unit_bars(session: Session, unit_ids: list[int]) -> dict[int, int]:
     """Each unit's min_fit_percent — the bar below which it is not worth showing.
 

@@ -1,3 +1,4 @@
+import secrets
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -20,6 +21,10 @@ from app.security import TOKEN_TTL_HOURS, create_access_token, hash_password, ve
 router = APIRouter(prefix="/api", tags=["auth"])
 
 MIN_PASSWORD_LENGTH = 8
+
+# Hashed once at import, and only ever compared against when no user matched, so
+# a failed login costs the same Argon2 work whether or not the account exists.
+_DUMMY_HASH = hash_password(secrets.token_urlsafe(32))
 
 
 def _to_out(user: User, session: Session) -> UserOut:
@@ -61,8 +66,27 @@ def login(payload: LoginRequest, session: Session = Depends(get_session)):
     ).first()
 
     # Same message either way — never reveal whether the account exists.
-    if not user or not verify_password(payload.password, user.hashed_password):
+    #
+    # Hash even when there is no user, against a throwaway digest. Otherwise the
+    # missing-user branch skips Argon2 entirely and returns in a fraction of the
+    # time a real account takes, which times the answer to "does this username
+    # exist?" without ever reading the wording.
+    if user:
+        password_ok = verify_password(payload.password, user.hashed_password)
+    else:
+        verify_password(payload.password, _DUMMY_HASH)
+        password_ok = False
+
+    if not password_ok:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "incorrect login or password")
+
+    # NOTE: this 403 is a known existence oracle — a deactivated account answers
+    # differently from an unknown one, so the pair of responses reveals which
+    # usernames are real. It is kept deliberately: todo 1's LOCKED contract
+    # documents 403 "account is deactivated" as distinct from 401, precisely so
+    # a deactivated user is not told their password was wrong. Collapsing it
+    # into the 401 is the more private choice and it needs a new contract
+    # version, not a quiet change here.
     if not user.is_active:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "account is deactivated")
 

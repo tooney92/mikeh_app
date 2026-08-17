@@ -204,6 +204,8 @@ def seed_admin_user(session: Session) -> str | None:
     return generated
 
 
+MIN_TEST_PASSWORD_LENGTH = 12
+
 # Four accounts whose only job is to prove the permission rules actually bite.
 # The admin cannot do it: it holds all 40 codenames and belongs to no unit, so
 # every menu item renders and every list is unfiltered — testing scope against
@@ -243,21 +245,34 @@ TEST_ACCOUNTS = (
 
 
 def seed_test_accounts(session: Session) -> list[str]:
-    """Create the four scoping accounts. Set TM_SKIP_TEST_ACCOUNTS to omit them.
+    """Create the four scoping accounts. OPT-IN: set TM_TEST_PASSWORD to enable.
 
-    Idempotent per username, so a rerun adds only what is missing rather than
-    duplicating or overwriting. They share one password from TM_TEST_PASSWORD:
-    these exist to be logged into by whoever is testing, so a per-account secret
-    would be ceremony without a benefit.
+    These were opt-OUT, created on every boot with a password hard-coded in this
+    file. One of them is a director with scope "all" and grants over every
+    opportunity, source, profile, decision and organisation. Since the opt-out
+    variable appeared in no documentation, deploying by the README would have
+    shipped four logins whose password is readable in the source.
+
+    So enabling them is now a deliberate act: set TM_TEST_PASSWORD and they are
+    created with it; leave it unset and they do not exist. There is no default
+    password, because a default password IS the vulnerability.
+
+    Idempotent per username, so a rerun adds only what is missing. They share
+    one password: they exist to be logged into by whoever is testing, and a
+    per-account secret would be ceremony without a benefit.
 
     Both units chosen here have seeded scores. A lead over Design Teem, Ingene
     Studios or TM Labs would see an empty list and prove nothing about filtering,
     because there is nothing to filter.
     """
-    if os.environ.get("TM_SKIP_TEST_ACCOUNTS"):
+    password = os.environ.get("TM_TEST_PASSWORD")
+    if not password:
         return []
-
-    password = os.environ.get("TM_TEST_PASSWORD", "tmglobal-test-2026")
+    if len(password) < MIN_TEST_PASSWORD_LENGTH:
+        raise ValueError(
+            f"TM_TEST_PASSWORD must be at least {MIN_TEST_PASSWORD_LENGTH} "
+            "characters — these accounts hold real grants."
+        )
     roles = {r.name: r for r in session.exec(select(Role)).all()}
     units = {u.name: u for u in session.exec(select(BusinessUnit)).all()}
 

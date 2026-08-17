@@ -72,10 +72,34 @@ class AdminAuth(AuthenticationBackend):
         return True
 
     async def authenticate(self, request: Request) -> bool | RedirectResponse:
+        """Re-read the user on every request, never trust the token's claim.
+
+        This used to check payload["admin"] alone. That claim is stamped at
+        login and frozen for the token's 12-hour life, so deactivating or
+        demoting an admin left them with full back-office access — including
+        the User and Role tables — until it expired. The API path has always
+        re-loaded the row and 403'd; the back office, which is the more
+        dangerous of the two, did not.
+        """
         token = request.session.get("token")
         payload = decode_access_token(token) if token else None
-        if not payload or not payload.get("admin"):
+        if not payload:
             return RedirectResponse(request.url_for("admin:login"), status_code=302)
+
+        try:
+            user_id = int(payload.get("sub", ""))
+        except (TypeError, ValueError):
+            return RedirectResponse(request.url_for("admin:login"), status_code=302)
+
+        with Session(engine) as session:
+            user = session.get(User, user_id)
+            # Authority is whatever is true NOW: the account still exists, is
+            # still active, and still holds admin:access.
+            if not user or not user.is_active or not user.can("admin:access"):
+                request.session.clear()
+                return RedirectResponse(
+                    request.url_for("admin:login"), status_code=302
+                )
         return True
 
 
@@ -236,6 +260,10 @@ class PermissionAdmin(ModelView, model=Permission):
 class BusinessUnitAdmin(ModelView, model=BusinessUnit):
     name_plural = "Business units"
     icon = "fa-solid fa-sitemap"
+    # Deleting a unit orphans its profile row and every opportunity score
+    # pointing at it, and SQLite does not enforce the foreign key. The five
+    # units are the shape of the business, not user-managed data.
+    can_delete = False
     column_list = [
         BusinessUnit.id,
         BusinessUnit.initials,

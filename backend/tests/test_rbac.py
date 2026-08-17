@@ -512,19 +512,33 @@ def test_profile_update_is_lead_and_above_not_member(client):
     grid's whole point is that scope and grants are independent, and this is
     a grant difference between two roles with the SAME scope."""
     admin = tok(client, "admin")
-    profile_id = client.get("/api/profiles", headers=admin).json()[0]["id"]
+    profiles = client.get("/api/profiles", headers=admin).json()
+    # bola leads TM Foundation, so use TM FOUNDATION's profile. profiles[0] is
+    # Takeout Media, and a lead editing another unit's profile is now a 403 in
+    # its own right — which would make this test pass or fail for the wrong
+    # reason. What it is here to prove is the GRANT: lead yes, member no.
+    own = next(p for p in profiles if p["businessUnitName"] == "TM Foundation")
+    other = next(p for p in profiles if p["businessUnitName"] == "Takeout Media")
     payload = {"positioning": "rbac write-gate probe"}
 
     member = tok(client, "chidi")
     assert (
-        client.put(f"/api/profiles/{profile_id}", json=payload, headers=member).status_code
+        client.put(f"/api/profiles/{own['id']}", json=payload, headers=member).status_code
         == 403
     )
 
     lead = tok(client, "bola")
-    ok = client.put(f"/api/profiles/{profile_id}", json=payload, headers=lead)
+    ok = client.put(f"/api/profiles/{own['id']}", json=payload, headers=lead)
     assert ok.status_code == 200
     assert ok.json()["positioning"] == payload["positioning"]
+
+    # And the grant alone is not enough — scope applies too. Without this, a
+    # lead could set another unit's min_fit_percent and silently empty their
+    # opportunity list from a screen they never see.
+    assert (
+        client.put(f"/api/profiles/{other['id']}", json=payload, headers=lead).status_code
+        == 403
+    )
 
 
 def test_scan_run_is_currently_granted_to_every_seeded_role(client):
@@ -535,3 +549,141 @@ def test_scan_run_is_currently_granted_to_every_seeded_role(client):
     stands: every seeded role can start a scan once authenticated."""
     for who in ("admin", "dayo", "bola", "chidi"):
         assert client.post("/api/scan", headers=tok(client, who)).status_code == 202
+
+
+# --- regressions from the code review, each one confirmed live before fixing ---
+
+
+def _unitless_member(client, username="orphan"):
+    """A member with a role but NO business unit — the /admin form allows it."""
+    from sqlmodel import Session, select
+
+    from app.db import engine
+    from app.models import Role, User
+    from app.security import hash_password
+
+    with Session(engine) as s:
+        if not s.exec(select(User).where(User.username == username)).first():
+            role = s.exec(select(Role).where(Role.name == "member")).one()
+            s.add(
+                User(
+                    username=username,
+                    email=f"{username}@tmglobal.local",
+                    hashed_password=hash_password(STAFF_PW),
+                    role_id=role.id,
+                )
+            )
+            s.commit()
+    return tok(client, username)
+
+
+def test_a_scoped_user_with_no_unit_sees_nothing_not_everything(client):
+    """The fail-open. `scoped = bool(unit_ids)` could not tell a director
+    (empty because they see all) from a member whose unit box was never ticked
+    (empty because they belong nowhere), and treated the second like the first.
+
+    Every account created in /admin without remembering to tick a unit was in
+    this state, because the form makes business_units optional.
+    """
+    orphan = _unitless_member(client)
+
+    assert client.get("/api/opportunities", headers=orphan).json() == []
+    assert client.get("/api/priority-actions", headers=orphan).json() == []
+
+    tiles = client.get("/api/radar", headers=orphan).json()
+    assert tiles["opportunitiesWorthPursuing"] == 0
+    assert tiles["estimatedPipelineValue"] == 0
+
+    # An admin, whose unit list is empty for the OPPOSITE reason, is unaffected.
+    admin_tiles = client.get("/api/radar", headers=tok(client, "admin")).json()
+    assert admin_tiles["estimatedPipelineValue"] > 0
+
+
+def test_detail_is_not_openable_for_an_opportunity_none_of_your_units_scored(client):
+    """Detail required only a token, so a lead whose list was empty could still
+    fetch any opportunity by its slug — and the slugs are guessable.
+
+    This is NOT the fit threshold: a below-bar row stays openable. It is about
+    having no score in any of your units at all.
+    """
+    orphan = _unitless_member(client, "orphan2")
+    r = client.get("/api/opportunities/gam-au", headers=orphan)
+    assert r.status_code == 404
+    # Same wording as a genuinely missing row, so it is not an existence oracle.
+    assert r.json()["detail"] == client.get(
+        "/api/opportunities/no-such-slug", headers=orphan
+    ).json()["detail"]
+
+    assert client.get("/api/opportunities/gam-au", headers=tok(client, "admin")).status_code == 200
+
+
+def test_a_decision_cannot_be_attributed_to_a_unit_that_does_not_exist(client):
+    """SQLite does not enforce the foreign key, so 999 was written through."""
+    r = client.post(
+        "/api/decisions",
+        json={"opportunityId": "gam-au", "businessUnitId": 999, "decision": "Watch"},
+        headers=tok(client, "admin"),
+    )
+    assert r.status_code == 400
+    assert "unknown business unit" in r.json()["detail"]
+
+
+def test_a_member_cannot_log_a_decision_for_another_unit(client):
+    """chidi is in TM Foundation. Takeout Media's learning history is not
+    theirs to write, least of all a Reject with a reason attached."""
+    from sqlmodel import Session, select
+
+    from app.db import engine
+    from app.models import BusinessUnit
+
+    with Session(engine) as s:
+        other = s.exec(
+            select(BusinessUnit).where(BusinessUnit.name == "Takeout Media")
+        ).one().id
+
+    r = client.post(
+        "/api/decisions",
+        json={
+            "opportunityId": "gam-au",
+            "businessUnitId": other,
+            "decision": "Reject",
+            "reason": "not ours to reject",
+        },
+        headers=tok(client, "chidi"),
+    )
+    assert r.status_code == 403
+
+
+def test_decisions_and_learning_are_scoped_like_everything_else(client):
+    """Both took a bare current_user, so a lead read another unit's candid
+    rejection reasons and an average computed over calls they never made."""
+    admin = tok(client, "admin")
+    # An admin logs one for each unit.
+    from sqlmodel import Session, select
+
+    from app.db import engine
+    from app.models import BusinessUnit
+
+    with Session(engine) as s:
+        units = {u.name: u.id for u in s.exec(select(BusinessUnit)).all()}
+
+    for unit in ("TM Foundation", "Takeout Media"):
+        client.post(
+            "/api/decisions",
+            json={
+                "opportunityId": "gam-au",
+                "businessUnitId": units[unit],
+                "decision": "Pursue",
+            },
+            headers=admin,
+        )
+
+    mine = client.get("/api/decisions", headers=tok(client, "chidi")).json()
+    assert mine, "the member should see their own unit's decisions"
+    assert {d["businessUnitId"] for d in mine} == {units["TM Foundation"]}
+
+    everyones = client.get("/api/decisions", headers=admin).json()
+    assert len(everyones) > len(mine)
+
+    stats = client.get("/api/learning", headers=tok(client, "chidi")).json()
+    assert stats["decisionsLogged"] == len(mine)
