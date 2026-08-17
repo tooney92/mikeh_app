@@ -1,0 +1,32 @@
+[
+  {
+    "initials": "TM",
+    "name": "Takeout Media",
+    "description": "Communications, brand strategy and campaigns across development and financial sectors.",
+    "services": ["Brand strategy", "Development communications", "Digital marketing", "Brand consultancy", "Events and activations", "Public relations"]
+  },
+  {
+    "initials": "DT",
+    "name": "Design Teem",
+    "description": "Design, identity and creative production for brands, institutions and programmes.",
+    "services": ["Brand design", "Motion and animation"]
+  },
+  {
+    "initials": "IS",
+    "name": "Ingene Studios",
+    "description": "Film, documentary and content production for broadcast, donors and brands.",
+    "services": ["Production"]
+  },
+  {
+    "initials": "TL",
+    "name": "TM Labs",
+    "description": "Technology, product and creative-tech builds for clients and internal ventures.",
+    "services": ["Tech contracts", "Partnerships"]
+  },
+  {
+    "initials": "TF",
+    "name": "TM Foundation",
+    "description": "Creative economy intelligence, research and ecosystem development.",
+    "services": ["Grants", "Fellowships"]
+  }
+]

@@ -8,6 +8,9 @@ dependencies = [
     "uvicorn[standard]>=0.32",
     "sqlmodel>=0.0.22",
     "sqladmin>=0.31.0",
+    "pwdlib[argon2]>=0.3.1",
+    "pyjwt>=2.13.0",
+    "itsdangerous>=2.2.0",
 ]
 
 [dependency-groups]

@@ -4,7 +4,8 @@ from fastapi import APIRouter, BackgroundTasks, Depends
 from sqlmodel import Session, select
 
 from app.db import engine, get_session
-from app.models import Opportunity, ScanRun, Source
+from app.deps import current_user, requires
+from app.models import Opportunity, ScanRun, Source, User
 from app.schemas import ScanStatus
 
 router = APIRouter(prefix="/api/scan", tags=["scan"])
@@ -39,7 +40,9 @@ def _latest(session: Session) -> ScanRun | None:
 
 @router.post("", response_model=ScanStatus, status_code=202)
 def start_scan(
-    background: BackgroundTasks, session: Session = Depends(get_session)
+    background: BackgroundTasks,
+    session: Session = Depends(get_session),
+    _: User = Depends(requires("scan:run")),
 ):
     run = ScanRun(status="running")
     session.add(run)
@@ -50,7 +53,9 @@ def start_scan(
 
 
 @router.get("/status", response_model=ScanStatus)
-def scan_status(session: Session = Depends(get_session)):
+def scan_status(
+    session: Session = Depends(get_session), _: User = Depends(current_user)
+):
     run = _latest(session)
     if not run:
         return ScanStatus(status="idle")

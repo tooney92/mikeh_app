@@ -5,7 +5,16 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.admin import mount_admin
 from app.db import init_db
-from app.routers import decisions, opportunities, profiles, radar, scan, sources
+from app.routers import (
+    auth,
+    decisions,
+    opportunities,
+    priority,
+    profiles,
+    radar,
+    scan,
+    sources,
+)
 from app.seed import run as run_seed
 
 
@@ -31,9 +40,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-mount_admin(app)  # back-office CRUD at /admin
+mount_admin(app)  # back-office CRUD at /admin, admins only
 
+app.include_router(auth.router)
 app.include_router(radar.router)
+app.include_router(priority.router)
 app.include_router(opportunities.router)
 app.include_router(decisions.router)
 app.include_router(profiles.router)

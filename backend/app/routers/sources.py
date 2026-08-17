@@ -2,14 +2,19 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 
 from app.db import get_session
-from app.models import Source
+from app.deps import current_user, requires
+from app.models import Source, User
 from app.schemas import SourceCreate, SourceOut, SourceUpdate
 
 router = APIRouter(prefix="/api/sources", tags=["sources"])
 
 
 @router.get("", response_model=list[SourceOut])
-def list_sources(active_only: bool = False, session: Session = Depends(get_session)):
+def list_sources(
+    active_only: bool = False,
+    session: Session = Depends(get_session),
+    _: User = Depends(current_user),
+):
     stmt = select(Source).order_by(Source.name)
     if active_only:
         stmt = stmt.where(Source.active == True)  # noqa: E712 — SQL comparison
@@ -17,7 +22,11 @@ def list_sources(active_only: bool = False, session: Session = Depends(get_sessi
 
 
 @router.post("", response_model=SourceOut, status_code=201)
-def add_source(payload: SourceCreate, session: Session = Depends(get_session)):
+def add_source(
+    payload: SourceCreate,
+    session: Session = Depends(get_session),
+    _: User = Depends(requires("source:create")),
+):
     src = Source(**payload.model_dump())
     session.add(src)
     session.commit()
@@ -27,7 +36,10 @@ def add_source(payload: SourceCreate, session: Session = Depends(get_session)):
 
 @router.patch("/{source_id}", response_model=SourceOut)
 def update_source(
-    source_id: int, payload: SourceUpdate, session: Session = Depends(get_session)
+    source_id: int,
+    payload: SourceUpdate,
+    session: Session = Depends(get_session),
+    _: User = Depends(requires("source:update")),
 ):
     src = session.get(Source, source_id)
     if not src:
@@ -41,7 +53,11 @@ def update_source(
 
 
 @router.delete("/{source_id}", status_code=204)
-def remove_source(source_id: int, session: Session = Depends(get_session)):
+def remove_source(
+    source_id: int,
+    session: Session = Depends(get_session),
+    _: User = Depends(requires("source:delete")),
+):
     src = session.get(Source, source_id)
     if not src:
         raise HTTPException(404, "source not found")
