@@ -687,3 +687,104 @@ def test_decisions_and_learning_are_scoped_like_everything_else(client):
 
     stats = client.get("/api/learning", headers=tok(client, "chidi")).json()
     assert stats["decisionsLogged"] == len(mine)
+
+
+# --- canEdit on the profile list: the client must never have to infer scope ---
+
+
+def _unitless_lead(client, username="orphan.lead"):
+    """A LEAD with no business unit. /admin creates exactly this: units are an
+    optional many-to-many on UserAdmin, so saving the form without ticking one
+    produces a user holding profile:update whose unit set is empty."""
+    from sqlmodel import Session, select
+
+    from app.db import engine
+    from app.models import Role, User
+    from app.security import hash_password
+
+    with Session(engine) as s:
+        if not s.exec(select(User).where(User.username == username)).first():
+            role = s.exec(select(Role).where(Role.name == "lead")).one()
+            s.add(
+                User(
+                    username=username,
+                    email=f"{username}@tmglobal.local",
+                    hashed_password=hash_password(STAFF_PW),
+                    role_id=role.id,
+                )
+            )
+            s.commit()
+    return tok(client, username)
+
+
+def test_can_edit_never_lies_about_what_a_put_would_do(client):
+    """canEdit must agree with the gate for EVERY role on EVERY profile.
+
+    This is the invariant that makes the field worth having. A canEdit the
+    frontend trusts, that disagrees with the PUT, is worse than no field — it
+    draws a control whose save 403s, which is the exact failure the Sources
+    read/write split exists to prevent. So assert the two against each other
+    rather than asserting canEdit against a hand-written expectation.
+
+    An empty body is a genuine no-op returning 200, so this probes all four
+    roles against all five profiles without mutating anything.
+    """
+    for who in ("admin", "dayo", "bola", "chidi"):
+        headers = tok(client, who)
+        for row in client.get("/api/profiles", headers=headers).json():
+            actual = client.put(
+                f"/api/profiles/{row['id']}", json={}, headers=headers
+            ).status_code
+            assert (actual == 200) == row["canEdit"], (
+                f"{who} on {row['businessUnitName']}: "
+                f"canEdit={row['canEdit']} but PUT returned {actual}"
+            )
+
+
+def test_can_edit_is_false_for_a_lead_who_belongs_to_no_unit(client):
+    """The reason this field exists rather than being derived client-side.
+
+    /api/auth/me carries businessUnits and permissions but no scope, so the only
+    client-side way to spot an unscoped user is `businessUnits.length === 0` —
+    the same fail-open inference removed from the backend as review finding 1.
+    This account defeats it: a lead with an empty unit set holds profile:update
+    and looks identical to an admin through that lens, so the inference would
+    render all five profiles editable and every save would 403.
+    """
+    headers = _unitless_lead(client)
+
+    me = client.get("/api/auth/me", headers=headers).json()
+    assert me["businessUnits"] == [], "the inference's input is genuinely empty"
+    assert "profile:update" in me["permissions"], "and they DO hold the grant"
+
+    rows = client.get("/api/profiles", headers=headers).json()
+    assert len(rows) == 5, "reading stays unscoped — they still see all five"
+    assert all(r["canEdit"] is False for r in rows), (
+        "belonging to no unit means editing nothing, not editing everything"
+    )
+
+    for row in rows:
+        assert (
+            client.put(f"/api/profiles/{row['id']}", json={}, headers=headers).status_code
+            == 403
+        )
+
+
+def test_can_edit_follows_membership_not_the_role_name(client):
+    """A two-unit lead gets exactly two editable rows. Unit membership is a SET,
+    so this is the case a single-unit shortcut would get wrong."""
+    admin = tok(client, "admin")
+    assert all(r["canEdit"] for r in client.get("/api/profiles", headers=admin).json())
+
+    lead = tok(client, "bola")
+    editable = {
+        r["businessUnitName"]
+        for r in client.get("/api/profiles", headers=lead).json()
+        if r["canEdit"]
+    }
+    assert editable == {"TM Foundation"}, editable
+
+    member = tok(client, "chidi")
+    assert not any(
+        r["canEdit"] for r in client.get("/api/profiles", headers=member).json()
+    ), "a member lacks profile:update entirely, whatever they belong to"

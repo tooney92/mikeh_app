@@ -147,6 +147,10 @@ class ProfileOut(CamelModel):
     credentials: str
     never_show: str
     min_fit_percent: int
+    # Whether THIS caller may PUT this row — the grant and the scope combined.
+    # Answered here so the client never has to derive scope from an empty
+    # businessUnits array, which is the fail-open inference in disguise.
+    can_edit: bool
 
 
 class ProfileUpdate(CamelModel):
