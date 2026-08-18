@@ -16,6 +16,24 @@ export default defineConfig({
         target: process.env.VITE_API_PROXY_TARGET ?? 'http://127.0.0.1:8000',
         changeOrigin: true,
       },
+      // The server-rendered admin back office sits OUTSIDE /api, so it needs
+      // its own proxy entry. Without this the sidebar's Back Office link has
+      // to point at the backend's origin directly, which is correct on this
+      // machine and dead for anyone reaching the app over a tunnel — only
+      // 5173 is exposed there.
+      '/admin': {
+        target: process.env.VITE_API_PROXY_TARGET ?? 'http://127.0.0.1:8000',
+        // NOT changeOrigin, unlike /api. The back office is server-rendered and
+        // issues absolute redirects (/admin -> /admin/, and the login flow):
+        // rewriting the Host header makes it build those from its OWN origin,
+        // so a tunnel visitor gets bounced to 127.0.0.1:8000 and dies there.
+        // Passing the original Host through makes it redirect to whatever
+        // origin the visitor actually used.
+        changeOrigin: false,
+        // Belt and braces: rewrite the host of any Location header it still
+        // sends absolutely.
+        autoRewrite: true,
+      },
     },
   },
 })

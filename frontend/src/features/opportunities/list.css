@@ -1,0 +1,374 @@
+/**
+ * The opportunity LIST screen.
+ *
+ * Same language as the app shell: flat, zero border-radius, 2px section rules,
+ * 1px row rules, grid-based, uppercase letter-spaced small labels. Only tokens
+ * that exist in styles/tokens.css are used.
+ *
+ * The shared state classes from States.tsx (.tm-empty, .tm-error, .tm-loading,
+ * .tm-null) are NOT styled here — they live in states.css, which States.tsx
+ * imports itself, so every screen using those components gets them.
+ */
+
+/* ---------------------------------------------------------- controls --- */
+
+.tm-oplist__controls {
+  margin-top: 36px;
+  border-top: 2px solid var(--tm-ink);
+  border-bottom: 2px solid var(--tm-ink);
+  padding: 22px 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 28px;
+  align-items: start;
+}
+
+.tm-oplist__control {
+  min-width: 0;
+}
+
+.tm-oplist__controllabel {
+  display: block;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tm-ink-40);
+  margin-bottom: 10px;
+}
+
+.tm-oplist__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tm-oplist__chip {
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tm-ink-60);
+  background: none;
+  border: 1px solid var(--tm-ink-15);
+  border-radius: 0;
+  padding: 9px 13px;
+  cursor: pointer;
+}
+
+.tm-oplist__chip:hover {
+  color: var(--tm-ink);
+  border-color: var(--tm-ink-40);
+}
+
+/* The selected chip takes the ink block — the strongest flat signal available
+   without inventing a colour that isn't in the tokens. */
+.tm-oplist__chip--on,
+.tm-oplist__chip--on:hover {
+  background: var(--tm-ink);
+  border-color: var(--tm-ink);
+  color: var(--tm-ground);
+}
+
+.tm-oplist__select {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tm-ink);
+  background: var(--tm-ground);
+  border: 1px solid var(--tm-ink-25);
+  border-radius: 0;
+  padding: 9px 10px;
+  width: 100%;
+  max-width: 100%;
+  cursor: pointer;
+}
+
+.tm-oplist__select:disabled {
+  color: var(--tm-ink-40);
+  cursor: default;
+}
+
+.tm-oplist__controlnote {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--tm-ink-55);
+  margin: 8px 0 0;
+}
+
+/*
+ * The weak-match escape hatch. Given the same visual weight as the unit
+ * filter rather than tucked away — it is the control that reveals a matching
+ * engine scoring badly, and a demoted row nobody can find is the same as a
+ * deleted one.
+ */
+.tm-oplist__toggle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tm-ink);
+  cursor: pointer;
+  user-select: none;
+}
+
+.tm-oplist__toggle input {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--tm-pink);
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+/* -------------------------------------------------------------- rows --- */
+
+.tm-oplist__count {
+  margin: 24px 0 0;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tm-ink);
+}
+
+.tm-oplist__countnote {
+  color: var(--tm-ink-40);
+}
+
+.tm-oplist__rows {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  border-top: 2px solid var(--tm-ink);
+  border-bottom: 2px solid var(--tm-ink);
+}
+
+.tm-oplist__item + .tm-oplist__item {
+  border-top: 1px solid var(--tm-ink-10);
+}
+
+.tm-oplist__row {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr) 176px;
+  grid-template-areas: 'rank body side';
+  gap: 26px;
+  padding: 24px 12px;
+  /* The row is an anchor; the global link colour would turn the whole card pink. */
+  color: var(--tm-ink);
+}
+
+.tm-oplist__row:hover {
+  background: var(--tm-ink-04);
+  color: var(--tm-ink);
+}
+
+.tm-oplist__row:hover .tm-oplist__title {
+  color: var(--tm-pink);
+}
+
+/* --------------------------------------------------------- fit block --- */
+
+.tm-oplist__rank {
+  grid-area: rank;
+  min-width: 0;
+}
+
+.tm-oplist__rankno {
+  display: block;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--tm-ink-25);
+  line-height: 1;
+  margin-bottom: 12px;
+}
+
+.tm-oplist__fitrow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tm-oplist__fitlabel {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tm-ink-40);
+}
+
+.tm-oplist__fitvalue {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.tm-oplist__fitrow--muted .tm-oplist__fitvalue {
+  font-size: 12px;
+  color: var(--tm-ink-55);
+}
+
+.tm-oplist__meter {
+  height: 4px;
+  background: var(--tm-ink-08);
+  margin: 7px 0 9px;
+}
+
+.tm-oplist__meterfill {
+  display: block;
+  height: 100%;
+  background: var(--tm-gradient);
+  max-width: 100%;
+}
+
+/* A bar drawn from the top-fit fallback must not read as the user's own score. */
+.tm-oplist__meterfill[data-null='true'] {
+  background: var(--tm-ink-15);
+}
+
+/* --------------------------------------------------------------- body --- */
+
+.tm-oplist__body {
+  grid-area: body;
+  min-width: 0;
+}
+
+.tm-oplist__orgline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.tm-oplist__org {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tm-ink-55);
+  overflow-wrap: anywhere;
+}
+
+.tm-oplist__cat {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tm-pink);
+  border: 1px solid var(--tm-pink-25);
+  background: var(--tm-pink-08);
+  padding: 3px 7px;
+  white-space: nowrap;
+}
+
+.tm-oplist__title {
+  font-size: 19px;
+  line-height: 1.25;
+  letter-spacing: -0.018em;
+  font-weight: 800;
+  margin: 0 0 8px;
+  overflow-wrap: anywhere;
+}
+
+.tm-oplist__desc {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--tm-ink-65);
+  margin: 0 0 14px;
+  max-width: 68ch;
+  overflow-wrap: anywhere;
+}
+
+.tm-oplist__meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px 20px;
+  margin: 0;
+  border-top: 1px solid var(--tm-ink-08);
+  padding-top: 12px;
+}
+
+.tm-oplist__metaitem {
+  min-width: 0;
+}
+
+.tm-oplist__metaitem dt {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tm-ink-40);
+  margin-bottom: 3px;
+}
+
+.tm-oplist__metaitem dd {
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--tm-ink-72);
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* --------------------------------------------------------------- side --- */
+
+.tm-oplist__side {
+  grid-area: side;
+  min-width: 0;
+  border-left: 1px solid var(--tm-ink-08);
+  padding-left: 20px;
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+
+.tm-oplist__sidelabel {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tm-ink-40);
+  margin-bottom: 4px;
+}
+
+.tm-oplist__sidevalue {
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--tm-ink-72);
+  overflow-wrap: anywhere;
+}
+
+/* A band, not a number: spaced out so "$$$$" reads as a scale at a glance. */
+.tm-oplist__band {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--tm-ink);
+  overflow-wrap: anywhere;
+}
+
+.tm-oplist__rel {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border: 1px solid var(--tm-ink-15);
+  color: var(--tm-ink-60);
+}
+
+.tm-oplist__rel--high {
+  border-color: var(--tm-pink);
+  background: var(--tm-pink-10);
+  color: var(--tm-pink);
+}
+
+.tm-oplist__rel--medium {
+  border-color: var(--tm-ink-25);
+  color: var(--tm-ink-72);
+}

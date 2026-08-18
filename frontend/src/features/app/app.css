@@ -5,10 +5,15 @@
  * grid-based. Distinct from the landing page on purpose.
  */
 
+/*
+ * Dashboard layout: a fixed-width rail on the left, content on the right.
+ * The rail owns its own scroll so a long nav never drags the page with it,
+ * and the content column scrolls independently the way a desktop app does.
+ */
 .tm-app {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: var(--tm-rail-w) minmax(0, 1fr);
 }
 
 .tm-app__loading {
@@ -20,29 +25,30 @@
   color: var(--tm-ink-55);
 }
 
-/* ----------------------------------------------------------------- nav --- */
+/* ---------------------------------------------------------------- rail --- */
 
-.tm-appbar {
-  border-bottom: 2px solid var(--tm-ink);
-  padding: 0 40px;
-  display: flex;
-  align-items: center;
-  gap: 32px;
+.tm-rail {
+  grid-column: 1;
+  border-right: 2px solid var(--tm-ink);
+  background: var(--tm-ground);
   position: sticky;
   top: 0;
-  background: var(--tm-ground);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
   z-index: 20;
 }
 
-.tm-appbar__brand {
+.tm-rail__brand {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 16px 0;
+  padding: 20px 20px 22px;
+  border-bottom: 1px solid var(--tm-ink-10);
   flex: 0 0 auto;
 }
 
-.tm-appbar__mark {
+.tm-rail__mark {
   width: 28px;
   height: 28px;
   background: var(--tm-gradient);
@@ -52,65 +58,86 @@
   color: #fff;
   font-weight: 800;
   font-size: 10px;
+  flex: 0 0 auto;
 }
 
-.tm-appbar__wordmark {
+.tm-rail__wordmark {
   font-size: 14px;
   font-weight: 800;
   letter-spacing: -0.015em;
   white-space: nowrap;
 }
 
-.tm-appbar__nav {
-  display: flex;
-  align-items: stretch;
-  gap: 2px;
+/* The nav takes the slack and scrolls alone, so the identity foot stays put. */
+.tm-rail__nav {
   flex: 1 1 auto;
-  overflow-x: auto;
+  overflow-y: auto;
+  padding: 8px 0 20px;
 }
 
-.tm-appbar__link {
-  display: flex;
-  align-items: center;
-  padding: 22px 14px;
+.tm-rail__group + .tm-rail__group {
+  margin-top: 4px;
+  border-top: 1px solid var(--tm-ink-08);
+  padding-top: 12px;
+}
+
+.tm-rail__grouplabel {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tm-ink-40);
+  padding: 14px 20px 8px;
+}
+
+.tm-rail__link {
+  display: block;
+  padding: 11px 20px;
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--tm-ink-60);
-  white-space: nowrap;
+  border-left: 3px solid transparent;
 }
 
-.tm-appbar__link:hover {
+.tm-rail__link:hover {
   color: var(--tm-ink);
   background: var(--tm-ink-04);
 }
 
-/* Active section takes a 4px inset rule in the pink accent. */
-.tm-appbar__link--active {
+/* Active row takes the 3px pink rule — the vertical answer to the old
+   underline, so the accent language survives the move to a rail. */
+.tm-rail__link--active {
   color: var(--tm-ink);
-  box-shadow: inset 0 -4px 0 var(--tm-pink);
+  background: var(--tm-ink-05);
+  border-left-color: var(--tm-pink);
 }
 
-.tm-appbar__actions {
-  display: flex;
-  align-items: center;
-  gap: 16px;
+/* Marks the item as leaving the app, so a new tab is not a surprise. */
+.tm-rail__link--external::after {
+  content: ' ↗';
+  color: var(--tm-ink-40);
+}
+
+.tm-rail__foot {
   flex: 0 0 auto;
-  margin-left: auto;
+  border-top: 1px solid var(--tm-ink-10);
+  padding: 16px 20px 18px;
 }
 
-.tm-appbar__user {
-  text-align: right;
+.tm-rail__user {
+  display: block;
   line-height: 1.3;
+  margin-bottom: 12px;
 }
 
-.tm-appbar__name {
+.tm-rail__name {
   font-size: 12.5px;
   font-weight: 800;
 }
 
-.tm-appbar__role {
+.tm-rail__role {
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -118,7 +145,7 @@
   color: var(--tm-ink-55);
 }
 
-.tm-appbar__signout {
+.tm-rail__signout {
   font-family: inherit;
   font-size: 10px;
   font-weight: 800;
@@ -129,16 +156,27 @@
   border: 1px solid var(--tm-ink-15);
   padding: 9px 12px;
   cursor: pointer;
+  width: 100%;
 }
 
-.tm-appbar__signout:hover {
+.tm-rail__signout:hover {
   border-color: var(--tm-pink);
+}
+
+/* Desk width has no drawer, so neither control exists. */
+.tm-app__menubtn,
+.tm-app__scrim {
+  display: none;
+}
+
+.tm-app__main {
+  grid-column: 2;
+  min-width: 0;
 }
 
 /* -------------------------------------------------------------- page --- */
 
 .tm-page {
-  flex: 1 1 auto;
   max-width: var(--tm-app-max);
   width: 100%;
   margin: 0 auto;
@@ -239,24 +277,61 @@
 /* -------------------------------------------------------- responsive --- */
 
 @media (max-width: 900px) {
-  .tm-appbar {
-    padding: 0 20px;
-    gap: 16px;
-    flex-wrap: wrap;
+  /*
+   * Below this width the rail stops being a column and becomes a drawer that
+   * slides over the page. The grid collapses to a single column so the
+   * content uses the full width whether the drawer is open or shut.
+   */
+  .tm-app {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .tm-appbar__nav {
-    order: 3;
-    width: 100%;
-    border-top: 1px solid var(--tm-ink-10);
+  .tm-rail {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--tm-rail-w);
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+    z-index: 40;
   }
 
-  .tm-appbar__link {
-    padding: 14px 10px;
+  .tm-app--menu-open .tm-rail {
+    transform: translateX(0);
   }
 
+  .tm-app__main {
+    grid-column: 1;
+  }
+
+  .tm-app__menubtn {
+    display: block;
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 50;
+    font-family: inherit;
+    font-size: 15px;
+    line-height: 1;
+    background: var(--tm-ground);
+    border: 1px solid var(--tm-ink-25);
+    color: var(--tm-ink);
+    padding: 10px 13px;
+    cursor: pointer;
+  }
+
+  /* Scrim only exists while the drawer is open, so it never eats taps. */
+  .tm-app--menu-open .tm-app__scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 35, 65, 0.4);
+    z-index: 30;
+  }
+
+  /* Clears the fixed menu button. */
   .tm-page {
-    padding: 32px 20px 64px;
+    padding: 64px 20px 64px;
   }
 
   .tm-page__title {

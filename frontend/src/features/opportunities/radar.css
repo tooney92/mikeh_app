@@ -1,0 +1,277 @@
+/**
+ * Radar screen.
+ *
+ * Follows the app language, not the landing page: zero border-radius, 2px
+ * section rules, 1px row rules, grid-based, uppercase letter-spaced small
+ * labels. Every colour here is a token from src/styles/tokens.css.
+ *
+ * All classes are prefixed tm-radar__ so nothing collides with the other
+ * screens being built alongside this one. The one exception is the block at
+ * the bottom, which styles the shared States.tsx classes SCOPED UNDER .tm-radar
+ * — those classes have no stylesheet of their own yet, and an unstyled error
+ * panel is exactly the "looks broken" failure this screen is meant to avoid.
+ * Scoping means a future global stylesheet for them costs nothing here.
+ */
+
+.tm-radar__section {
+  margin-top: 44px;
+}
+
+.tm-radar__sectionhead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 2px solid var(--tm-ink);
+  padding-bottom: 10px;
+  margin-bottom: 22px;
+}
+
+.tm-radar__sectiontitle {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tm-ink);
+  margin: 0;
+}
+
+.tm-radar__sectioncount {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tm-ink-55);
+  white-space: nowrap;
+}
+
+/* ----------------------------------------------------------- pipeline --- */
+
+/*
+ * The headline number sits above the counts rather than inside the tile grid:
+ * it is money, the others are counts, and mixing the two units in one row
+ * invites reading "5" and "₦2.4bn" as the same kind of thing.
+ */
+.tm-radar__pipeline {
+  border-top: 2px solid var(--tm-pink);
+  background: var(--tm-pink-08);
+  padding: 20px 22px 22px;
+  margin-bottom: 18px;
+}
+
+.tm-radar__pipelinevalue {
+  font-size: 40px;
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-top: 10px;
+  overflow-wrap: anywhere;
+}
+
+.tm-radar__pipelinenote {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--tm-ink-60);
+  margin: 8px 0 0;
+  max-width: 58ch;
+}
+
+/* A zero pipeline is a fact too — muted, and it says why. */
+.tm-radar__pipeline--zero {
+  border-top-color: var(--tm-ink-25);
+  background: var(--tm-ink-04);
+}
+
+.tm-radar__pipeline--zero .tm-radar__pipelinevalue {
+  color: var(--tm-ink-40);
+}
+
+/* -------------------------------------------------------------- tiles --- */
+
+.tm-radar__tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.tm-radar__tile {
+  min-width: 0;
+  border-top: 2px solid var(--tm-ink);
+  padding: 16px 16px 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.tm-radar__tilelabel {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tm-ink-55);
+  line-height: 1.4;
+}
+
+.tm-radar__tilevalue {
+  font-size: 38px;
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-top: 12px;
+}
+
+/*
+ * A zero tile. Muted rule, muted ground, muted figure — at a glance it reads
+ * as "quiet", and the tag plus the note say which kind of quiet it is. It is
+ * never removed: a dashboard that changes shape week to week reads as
+ * arbitrary, and the absent tile takes the fact that we watch for it with it.
+ */
+.tm-radar__tile--zero {
+  border-top-color: var(--tm-ink-25);
+  background: var(--tm-ink-04);
+}
+
+.tm-radar__tile--zero .tm-radar__tilevalue {
+  color: var(--tm-ink-40);
+}
+
+/* Nothing feeds this count yet — a dashed tag, matching the app's
+   "not built yet" placeholder language. */
+.tm-radar__tile--no-source .tm-radar__tiletag {
+  border: 1px dashed var(--tm-ink-25);
+  color: var(--tm-ink-55);
+}
+
+/* The count is live, this week's answer is simply none. */
+.tm-radar__tile--none-yet .tm-radar__tiletag {
+  border: 1px solid var(--tm-ink-15);
+  color: var(--tm-ink-60);
+}
+
+.tm-radar__tiletag {
+  align-self: flex-start;
+  margin-top: 12px;
+  padding: 5px 8px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tm-radar__tilenote {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--tm-ink-60);
+  margin: 10px 0 0;
+}
+
+.tm-radar__legend {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--tm-ink-55);
+  margin: 18px 0 0;
+  max-width: 72ch;
+}
+
+.tm-radar__legend strong {
+  color: var(--tm-ink-72);
+  font-weight: 800;
+}
+
+/* ----------------------------------------------------------- actions --- */
+
+.tm-radar__actions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--tm-ink-15);
+}
+
+.tm-radar__action {
+  border-bottom: 1px solid var(--tm-ink-15);
+}
+
+.tm-radar__actionlink {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr) 24px;
+  align-items: start;
+  gap: 16px;
+  padding: 18px 14px 18px 12px;
+  color: var(--tm-ink);
+  border-left: 3px solid transparent;
+}
+
+.tm-radar__actionlink:hover {
+  color: var(--tm-ink);
+  background: var(--tm-ink-04);
+}
+
+.tm-radar__actionlink:focus-visible {
+  outline: 2px solid var(--tm-pink);
+  outline-offset: -2px;
+}
+
+.tm-radar__actiontype {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tm-ink-55);
+  padding-top: 3px;
+}
+
+/*
+ * A Partnership row is the joint-pitch signal — two or more units both scored
+ * 60+ on the same thing — and is the most interesting row on the screen, so it
+ * takes the pink rule and the pink label. Opportunity rows stay plain.
+ */
+.tm-radar__action--partnership .tm-radar__actionlink {
+  border-left-color: var(--tm-pink);
+  background: var(--tm-pink-08);
+}
+
+.tm-radar__action--partnership .tm-radar__actionlink:hover {
+  background: var(--tm-pink-10);
+}
+
+.tm-radar__action--partnership .tm-radar__actiontype {
+  color: var(--tm-pink);
+}
+
+.tm-radar__actionbody {
+  min-width: 0;
+  display: block;
+}
+
+.tm-radar__actiontitle {
+  display: block;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
+}
+
+.tm-radar__actiondesc {
+  display: block;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--tm-ink-65);
+  margin-top: 6px;
+  max-width: 72ch;
+  overflow-wrap: anywhere;
+}
+
+.tm-radar__actiongo {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--tm-ink-25);
+  text-align: right;
+  padding-top: 1px;
+}
+
+.tm-radar__actionlink:hover .tm-radar__actiongo {
+  color: var(--tm-pink);
+}
+
+/* ----------------------------------------------- shared state panels --- */

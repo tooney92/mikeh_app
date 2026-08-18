@@ -1,0 +1,1142 @@
+/**
+ * Profile & sources.
+ *
+ * One stylesheet for the whole screen — the profiles, the sources table and
+ * the sweep panel — imported once by ProfileSourcesPage.tsx.
+ *
+ * Same language as the rest of the app: flat, zero border-radius, 2px section
+ * rules, 1px row rules, grid-based, uppercase letter-spaced small labels.
+ * Every colour is a token from src/styles/tokens.css and nothing else — note
+ * there is no --tm-ink-30, so the muted greys here are --tm-ink-25 and
+ * --tm-ink-40.
+ *
+ * The shared state classes from States.tsx (.tm-empty, .tm-error, .tm-loading,
+ * .tm-null) are NOT styled here. They live in states.css, which States.tsx
+ * imports itself, so this screen gets them by using the components.
+ */
+
+/* ------------------------------------------------------------ sections --- */
+
+.tm-prof__section {
+  margin-top: 44px;
+}
+
+.tm-prof__sectionhead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 2px solid var(--tm-ink);
+  padding-bottom: 10px;
+  margin-bottom: 18px;
+}
+
+.tm-prof__sectiontitle {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tm-ink);
+  margin: 0;
+}
+
+.tm-prof__sectioncount {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tm-ink-55);
+  white-space: nowrap;
+}
+
+.tm-prof__sectionlede {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tm-ink-65);
+  margin: 0 0 18px;
+  max-width: 74ch;
+}
+
+/*
+ * How many rows this account may edit. Stated as a fact up front rather than
+ * left to be inferred from which cards have buttons — "four of these are
+ * read-only for me" should not be a deduction.
+ */
+.tm-prof__scopenote {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--tm-ink-60);
+  border-left: 2px solid var(--tm-ink-25);
+  padding-left: 12px;
+  margin: 0 0 20px;
+  max-width: 74ch;
+}
+
+/* ----------------------------------------------------- profile cards --- */
+
+.tm-prof__cards {
+  display: grid;
+  gap: 18px;
+}
+
+.tm-prof__card {
+  border-top: 2px solid var(--tm-ink);
+  padding: 18px 0 24px;
+}
+
+/*
+ * A card the caller cannot edit is MUTED, NEVER HIDDEN, and never styled like
+ * an error. Everyone sees all five profiles on purpose — reading what a peer
+ * unit is chasing is how a joint pitch gets spotted — so read-only has to look
+ * like a state of the page, not like something has gone wrong.
+ */
+.tm-prof__card--readonly {
+  border-top-color: var(--tm-ink-25);
+  background: var(--tm-ink-04);
+  padding-left: 18px;
+  padding-right: 18px;
+}
+
+/* An unfilled profile takes the accent: it is the work this screen is for. */
+.tm-prof__card--unfilled {
+  border-top-color: var(--tm-pink);
+}
+
+.tm-prof__cardhead {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: start;
+}
+
+.tm-prof__initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  background: var(--tm-ink);
+  color: var(--tm-ground);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.tm-prof__card--readonly .tm-prof__initials {
+  background: var(--tm-ink-40);
+}
+
+.tm-prof__cardtitles {
+  min-width: 0;
+}
+
+.tm-prof__unit {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 6px;
+}
+
+.tm-prof__positioning {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--tm-ink-65);
+  margin: 0;
+  max-width: 70ch;
+}
+
+/* A field that is genuinely empty on the server, said in words. */
+.tm-prof__blank {
+  color: var(--tm-ink-40);
+  font-style: italic;
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.tm-prof__cardaction {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tm-prof__edit {
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tm-ground);
+  background: var(--tm-ink);
+  border: 1px solid var(--tm-ink);
+  border-radius: 0;
+  padding: 10px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tm-prof__edit:hover {
+  background: var(--tm-pink);
+  border-color: var(--tm-pink);
+}
+
+/*
+ * The read-only marker. Quiet and factual — an outline, not a warning colour.
+ * Being unable to edit a peer unit's profile is the normal case for most
+ * accounts and must not read as a permission error.
+ */
+.tm-prof__lock {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tm-ink-55);
+  border: 1px solid var(--tm-ink-25);
+  padding: 8px 12px;
+  white-space: nowrap;
+  cursor: help;
+}
+
+/* --------------------------------------------------- unfilled notice --- */
+
+/*
+ * Three of five units land here. Dashed like the app's other "not done yet"
+ * language, and accented so it reads as an outstanding job rather than as a
+ * failure — a solid pink error box would say the opposite of the truth.
+ */
+.tm-prof__todo {
+  border: 1px dashed var(--tm-pink-25);
+  background: var(--tm-pink-08);
+  padding: 18px 20px;
+  margin-top: 18px;
+}
+
+.tm-prof__todotitle {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tm-pink);
+  margin-bottom: 10px;
+}
+
+.tm-prof__todotext {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--tm-ink-72);
+  margin: 0;
+  max-width: 74ch;
+}
+
+.tm-prof__todotext--muted {
+  color: var(--tm-ink-55);
+  margin-top: 12px;
+}
+
+.tm-prof__todostart {
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tm-ground);
+  background: var(--tm-pink);
+  border: none;
+  border-radius: 0;
+  padding: 11px 18px;
+  margin-top: 14px;
+  cursor: pointer;
+  box-shadow: var(--tm-shadow-pill);
+}
+
+/* --------------------------------------------------------- card body --- */
+
+.tm-prof__body {
+  margin-top: 20px;
+  display: grid;
+  gap: 20px;
+}
+
+/* The fit bar. Given real weight: it decides what a whole team can see. */
+.tm-prof__bar {
+  border-left: 2px solid var(--tm-pink);
+  padding-left: 14px;
+}
+
+.tm-prof__barhead {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.tm-prof__barlabel {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tm-ink-40);
+}
+
+.tm-prof__barvalue {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.tm-prof__bartrack {
+  position: relative;
+  height: 4px;
+  background: var(--tm-ink-08);
+  margin: 8px 0 10px;
+  max-width: 320px;
+}
+
+.tm-prof__barfill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--tm-gradient);
+}
+
+.tm-prof__barnote {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--tm-ink-60);
+  margin: 0;
+  max-width: 74ch;
+}
+
+/* ------------------------------------------------------------- lists --- */
+
+.tm-prof__lists {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 28px;
+}
+
+.tm-prof__list {
+  min-width: 0;
+  border-top: 1px solid var(--tm-ink-15);
+  padding-top: 12px;
+}
+
+.tm-prof__listlabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tm-ink-55);
+  margin-bottom: 10px;
+}
+
+.tm-prof__items {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--tm-ink-72);
+}
+
+.tm-prof__listhint {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--tm-ink-40);
+  margin: 10px 0 0;
+  max-width: 62ch;
+}
+
+/*
+ * "Never show" is guidance for a matching engine that does not exist yet.
+ * Deliberately styled DOWN, not up: an active-looking rule block would tell
+ * the reader an exclusion is running when nothing consults this field.
+ */
+.tm-prof__list--never {
+  border-top-style: dashed;
+  border-top-color: var(--tm-ink-25);
+}
+
+.tm-prof__items--never {
+  color: var(--tm-ink-55);
+}
+
+.tm-prof__tag {
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tm-ink-60);
+  border: 1px solid var(--tm-ink-25);
+  padding: 3px 6px;
+  letter-spacing: 0.08em;
+}
+
+.tm-prof__listhint--warn {
+  color: var(--tm-ink-60);
+}
+
+/* -------------------------------------------------------- edit form --- */
+
+.tm-prof__form {
+  margin-top: 20px;
+  border-top: 1px solid var(--tm-ink-15);
+  padding-top: 20px;
+  display: grid;
+  gap: 18px;
+}
+
+.tm-prof__field {
+  display: grid;
+  gap: 8px;
+}
+
+.tm-prof__fieldlabel {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tm-ink-40);
+}
+
+.tm-prof__textarea {
+  font-family: inherit;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--tm-ink);
+  background: var(--tm-ground);
+  border: 1px solid var(--tm-ink-25);
+  border-radius: 0;
+  padding: 10px 12px;
+  width: 100%;
+  resize: vertical;
+}
+
+.tm-prof__textarea:focus,
+.tm-prof__number:focus {
+  outline: 2px solid var(--tm-pink);
+  outline-offset: -2px;
+}
+
+.tm-prof__number {
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--tm-ink);
+  background: var(--tm-ground);
+  border: 1px solid var(--tm-ink-25);
+  border-radius: 0;
+  padding: 10px 12px;
+  width: 110px;
+}
+
+.tm-prof__fieldhint {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--tm-ink-40);
+  margin: 0;
+  max-width: 74ch;
+}
+
+.tm-prof__fieldhint--warn {
+  color: var(--tm-ink-62);
+}
+
+.tm-prof__fielderror {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--tm-pink);
+  margin: 0;
+}
+
+.tm-prof__formactions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.tm-prof__save,
+.tm-src__save {
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tm-ground);
+  background: var(--tm-pink);
+  border: 1px solid var(--tm-pink);
+  border-radius: 0;
+  padding: 11px 18px;
+  cursor: pointer;
+}
+
+.tm-prof__save:disabled,
+.tm-src__save:disabled {
+  background: var(--tm-ink-25);
+  border-color: var(--tm-ink-25);
+  cursor: default;
+}
+
+.tm-prof__cancel,
+.tm-src__cancel {
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tm-ink-60);
+  background: none;
+  border: 1px solid var(--tm-ink-15);
+  border-radius: 0;
+  padding: 11px 16px;
+  cursor: pointer;
+}
+
+.tm-prof__cancel:hover,
+.tm-src__cancel:hover {
+  border-color: var(--tm-ink-40);
+  color: var(--tm-ink);
+}
+
+.tm-prof__formnote {
+  font-size: 11.5px;
+  color: var(--tm-ink-40);
+  margin: 0;
+}
+
+/* --------------------------------------------------------- notices --- */
+
+/*
+ * Four outcomes, three appearances. "Saved" and "nothing to save" are
+ * different news and are said differently; a server that returns 200 without
+ * applying the change gets the loud treatment, because that one is a fault.
+ */
+.tm-prof__notice {
+  margin-top: 16px;
+  padding: 14px 16px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--tm-ink-72);
+  border-left: 3px solid var(--tm-ink-25);
+  background: var(--tm-ink-04);
+  max-width: 74ch;
+}
+
+.tm-prof__notice--ok {
+  border-left-color: var(--tm-orange);
+}
+
+.tm-prof__notice--warn {
+  border-left-color: var(--tm-pink);
+}
+
+.tm-prof__notice--loud {
+  border: 1px solid var(--tm-pink);
+  border-left-width: 3px;
+  background: var(--tm-pink-10);
+  color: var(--tm-ink);
+}
+
+/* ========================================================== sources === */
+
+.tm-src__controls {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.tm-src__control {
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+
+.tm-src__controllabel {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tm-ink-40);
+}
+
+.tm-src__input,
+.tm-src__select {
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--tm-ink);
+  background: var(--tm-ground);
+  border: 1px solid var(--tm-ink-25);
+  border-radius: 0;
+  padding: 9px 10px;
+  width: 100%;
+}
+
+.tm-src__input:focus,
+.tm-src__select:focus {
+  outline: 2px solid var(--tm-pink);
+  outline-offset: -2px;
+}
+
+.tm-src__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-top: 1px solid var(--tm-ink-15);
+  padding-top: 12px;
+  margin-bottom: 12px;
+}
+
+.tm-src__count {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tm-ink-55);
+}
+
+.tm-src__add {
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tm-ground);
+  background: var(--tm-ink);
+  border: 1px solid var(--tm-ink);
+  border-radius: 0;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+.tm-src__add:hover {
+  background: var(--tm-pink);
+  border-color: var(--tm-pink);
+}
+
+.tm-src__banner {
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--tm-ink-72);
+  border-left: 3px solid var(--tm-ink-25);
+  background: var(--tm-ink-04);
+}
+
+.tm-src__banner--ok {
+  border-left-color: var(--tm-orange);
+}
+
+.tm-src__banner--warn {
+  border-left-color: var(--tm-pink);
+}
+
+.tm-src__banner--loud {
+  border: 1px solid var(--tm-pink);
+  border-left-width: 3px;
+  background: var(--tm-pink-10);
+  color: var(--tm-ink);
+}
+
+/* ---------------------------------------------------------- table --- */
+
+/*
+ * Sized for ~85 rows: deliverable #4 imports the client's 81 platforms into
+ * this same endpoint. Hence the search and three filters above rather than a
+ * plain list, and hence the horizontal scroll container — a squeezed URL
+ * column at 900px is what makes a long table unreadable.
+ *
+ * No pagination: the API has none, it returns a bare array, and paginating
+ * client-side over a complete list only hides rows from the browser's find.
+ */
+.tm-src__scroll {
+  overflow-x: auto;
+}
+
+.tm-src__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 860px;
+}
+
+.tm-src__table th {
+  text-align: left;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tm-ink-40);
+  border-bottom: 1px solid var(--tm-ink-25);
+  padding: 0 12px 10px 0;
+  white-space: nowrap;
+}
+
+.tm-src__table td {
+  border-bottom: 1px solid var(--tm-ink-08);
+  padding: 12px 12px 12px 0;
+  vertical-align: top;
+  color: var(--tm-ink-72);
+}
+
+.tm-src__row--paused td {
+  color: var(--tm-ink-40);
+}
+
+.tm-src__name {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--tm-ink);
+  margin-bottom: 3px;
+}
+
+.tm-src__row--paused .tm-src__name {
+  color: var(--tm-ink-55);
+}
+
+.tm-src__url {
+  font-size: 11.5px;
+  color: var(--tm-ink-40);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.tm-src__url:hover {
+  color: var(--tm-pink);
+  text-decoration: underline;
+}
+
+.tm-src__type {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid var(--tm-ink-15);
+  padding: 4px 7px;
+  color: var(--tm-ink-60);
+  white-space: nowrap;
+}
+
+/*
+ * "not checked" — the type nobody has established yet.
+ *
+ * DASHED, deliberately. The same visual language as the unfilled profiles and
+ * the empty states: a dashed edge means "this is waiting for someone", where a
+ * solid one means "this is a value". It must not read as just another type.
+ */
+.tm-src__type--unknown {
+  border-style: dashed;
+  border-color: var(--tm-ink-25);
+  color: var(--tm-ink-40);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  cursor: help;
+}
+
+/*
+ * Provenance. "Your list" is the answer to the question she actually asked —
+ * did my 81 arrive intact — so it carries the accent and "Ours" stays quiet.
+ */
+.tm-src__prov {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--tm-ink-55);
+  white-space: nowrap;
+}
+
+.tm-src__prov--client {
+  color: var(--tm-pink);
+  font-weight: 800;
+}
+
+/*
+ * sourceRole. See RoleCell — criterion 21 requires "unconfirmed" to look like
+ * a QUESTION rather than a quiet default, or nobody will ever go and answer it.
+ * All 90 rows read this way today, which is correct rather than unfinished.
+ */
+.tm-src__role {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--tm-ink-60);
+  white-space: nowrap;
+}
+
+.tm-src__role--unconfirmed {
+  display: inline-block;
+  border: 1px dashed var(--tm-pink-25);
+  background: var(--tm-pink-08);
+  color: var(--tm-pink);
+  padding: 3px 7px;
+  font-weight: 700;
+  cursor: help;
+}
+
+.tm-src__role--aggregator,
+.tm-src__role--issuer {
+  color: var(--tm-ink-72);
+}
+
+/*
+ * Scope, rendered raw. Deliberately plain and unbadged: it is a legacy string
+ * that cannot describe three of the five business units, and dressing it up
+ * would imply it means more than it does.
+ */
+.tm-src__scope {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px;
+  color: var(--tm-ink-60);
+}
+
+.tm-src__muted {
+  color: var(--tm-ink-40);
+  font-style: italic;
+}
+
+/* A real null, said in words. Never a blank cell and never a dash. */
+.tm-src__never {
+  font-size: 12px;
+  color: var(--tm-ink-40);
+  border-bottom: 1px dotted var(--tm-ink-25);
+  cursor: help;
+}
+
+.tm-src__status {
+  display: block;
+  font-size: 12.5px;
+}
+
+.tm-src__status--bad {
+  color: var(--tm-pink);
+  font-weight: 700;
+}
+
+.tm-src__when {
+  display: block;
+  font-size: 11px;
+  color: var(--tm-ink-40);
+  margin-top: 2px;
+}
+
+.tm-src__state {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tm-ink-40);
+  white-space: nowrap;
+}
+
+.tm-src__state--on {
+  color: var(--tm-ink);
+}
+
+.tm-src__actions {
+  white-space: nowrap;
+}
+
+.tm-src__action {
+  font-family: inherit;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tm-ink-60);
+  background: none;
+  border: 1px solid var(--tm-ink-15);
+  border-radius: 0;
+  padding: 7px 10px;
+  margin-right: 6px;
+  cursor: pointer;
+}
+
+.tm-src__action:hover {
+  border-color: var(--tm-ink-40);
+  color: var(--tm-ink);
+}
+
+.tm-src__action--danger:hover {
+  border-color: var(--tm-pink);
+  color: var(--tm-pink);
+}
+
+.tm-src__srhead {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.tm-src__drawerrow td {
+  background: var(--tm-ink-04);
+  padding: 16px 16px 18px;
+}
+
+.tm-src__confirmtext {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--tm-ink-72);
+  margin: 0 0 14px;
+  max-width: 74ch;
+}
+
+.tm-src__confirmactions {
+  display: flex;
+  gap: 10px;
+}
+
+.tm-src__danger {
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tm-ground);
+  background: var(--tm-pink);
+  border: 1px solid var(--tm-pink);
+  border-radius: 0;
+  padding: 11px 18px;
+  cursor: pointer;
+}
+
+/* -------------------------------------------------- source forms --- */
+
+.tm-src__form {
+  border: 1px solid var(--tm-ink-15);
+  border-left: 3px solid var(--tm-ink);
+  padding: 18px 20px 20px;
+  margin-bottom: 16px;
+  display: grid;
+  gap: 14px;
+}
+
+.tm-src__drawerrow .tm-src__form {
+  margin-bottom: 0;
+  background: var(--tm-ground);
+}
+
+.tm-src__formgrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.tm-src__field {
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+
+/*
+ * The sentence that keeps PATCH's narrowness visible. The create form says
+ * these three can only be set now; the edit form names their current values
+ * and says why they are not offered. Either way the reader is never left
+ * looking for a control that is silently absent.
+ */
+.tm-src__formnote {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--tm-ink-62);
+  margin: 0;
+  max-width: 84ch;
+}
+
+.tm-src__formerror {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--tm-pink);
+  margin: 0;
+}
+
+.tm-src__formactions {
+  display: flex;
+  gap: 12px;
+}
+
+.tm-src__toggle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+  color: var(--tm-ink);
+  cursor: pointer;
+  user-select: none;
+  padding: 8px 0;
+}
+
+.tm-src__toggle input {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--tm-pink);
+  flex: 0 0 auto;
+  cursor: pointer;
+}
+
+.tm-src__legend {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--tm-ink-55);
+  border-top: 1px solid var(--tm-ink-15);
+  padding-top: 12px;
+  margin: 16px 0 0;
+  max-width: 84ch;
+}
+
+/* ============================================================= scan === */
+
+.tm-scan__panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 28px;
+  align-items: start;
+  border-left: 2px solid var(--tm-ink-25);
+  padding-left: 18px;
+}
+
+.tm-scan__statusline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tm-scan__dot {
+  width: 9px;
+  height: 9px;
+  background: var(--tm-ink-25);
+  flex: 0 0 auto;
+}
+
+.tm-scan__dot--complete {
+  background: var(--tm-orange);
+}
+
+.tm-scan__dot--run {
+  background: var(--tm-pink);
+}
+
+.tm-scan__status {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tm-ink);
+}
+
+.tm-scan__figures {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  margin: 16px 0 0;
+}
+
+.tm-scan__figure dt {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tm-ink-40);
+}
+
+.tm-scan__figure dd {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 6px 0 0;
+}
+
+/*
+ * The honest sentence about what a sweep does. Full weight, always shown —
+ * this is the line that stops "sweep complete" being read as "new
+ * opportunities arrived", and it must not be demoted to fine print.
+ */
+.tm-scan__truth {
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--tm-ink-65);
+  margin: 18px 0 0;
+  max-width: 78ch;
+}
+
+.tm-scan__note {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--tm-ink-55);
+  margin: 12px 0 0;
+  max-width: 78ch;
+}
+
+.tm-scan__note--warn {
+  color: var(--tm-ink-72);
+  border-left: 3px solid var(--tm-pink);
+  padding-left: 12px;
+}
+
+.tm-scan__side {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+.tm-scan__run {
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tm-ground);
+  background: var(--tm-ink);
+  border: 1px solid var(--tm-ink);
+  border-radius: 0;
+  padding: 13px 18px;
+  cursor: pointer;
+}
+
+.tm-scan__run:hover:not(:disabled) {
+  background: var(--tm-pink);
+  border-color: var(--tm-pink);
+}
+
+.tm-scan__run:disabled {
+  background: var(--tm-ink-25);
+  border-color: var(--tm-ink-25);
+  cursor: default;
+}
+
+.tm-scan__runnote {
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--tm-ink-40);
+  margin: 0;
+}
+
+/* ------------------------------------------------------- narrow --- */
+
+@media (max-width: 900px) {
+  .tm-prof__lists,
+  .tm-src__controls,
+  .tm-src__formgrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tm-prof__cardhead {
+    grid-template-columns: 46px minmax(0, 1fr);
+  }
+
+  /* The edit control drops under the title rather than squeezing it. */
+  .tm-prof__cardaction {
+    grid-column: 1 / -1;
+  }
+
+  .tm-scan__panel {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

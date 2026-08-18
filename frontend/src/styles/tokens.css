@@ -41,6 +41,9 @@
   /* Layout */
   --tm-landing-max: 1100px;
   --tm-app-max: 1180px;
+  /* Dashboard sidebar. Wide enough for "Profile & Sources" on one line at the
+     rail's uppercase tracking — narrower and the longest item wraps. */
+  --tm-rail-w: 248px;
 
   /*
    * Elms Sans is the specified face (loaded in index.html). The fallback stack

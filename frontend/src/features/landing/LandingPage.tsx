@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react'
+import { Link } from 'react-router-dom'
 import {
   briefingPoints,
   briefingRows,
@@ -46,6 +47,13 @@ function Nav() {
         ))}
       </nav>
       <div className="tm-nav__actions">
+        {/*
+          Router Link, not an <a href>: a full page reload here would throw away
+          the auth context and make the sign-in feel slower than it is.
+        */}
+        <Link className="tm-nav__login" to="/login">
+          Log in
+        </Link>
         <a className="tm-btn-gradient tm-nav__cta" href="#cta">
           Open dashboard
         </a>

@@ -1,0 +1,106 @@
+/**
+ * Styles for the shared loading / error / empty / null primitives in
+ * States.tsx.
+ *
+ * These live in ONE file rather than per screen. Each of the three todo #2
+ * screens initially styled them itself — two scoped their own copy and the
+ * third deliberately left them alone to avoid a clash, which meant the detail
+ * screen's error and empty panels rendered unstyled. An unstyled "that didn't
+ * load" is precisely the failure these components exist to prevent.
+ *
+ * Imported once from States.tsx, so any screen using the components gets the
+ * styles automatically and no screen has to remember.
+ */
+
+.tm-loading {
+  padding: 28px 0;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tm-ink-40);
+}
+
+/*
+ * Empty and error look DELIBERATELY different from each other. A user needs to
+ * know at a glance whether there is genuinely nothing here or whether the
+ * request failed — the whole point of the known-empty realities in the todo #2
+ * contract is that seven correct-but-blank cases will otherwise read as bugs.
+ *
+ * Empty is dashed, matching the app's existing "not built yet" language.
+ * Error is solid and takes the pink accent, because it is actionable.
+ */
+.tm-empty {
+  border: 1px dashed var(--tm-ink-25);
+  padding: 28px;
+}
+
+.tm-empty__title {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tm-ink-55);
+  margin-bottom: 10px;
+}
+
+.tm-empty__text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tm-ink-65);
+  margin: 0;
+  max-width: 62ch;
+}
+
+.tm-error {
+  border: 1px solid var(--tm-ink-15);
+  border-left: 3px solid var(--tm-pink);
+  padding: 28px;
+}
+
+.tm-error__title {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tm-pink);
+  margin-bottom: 10px;
+}
+
+.tm-error__text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tm-ink-65);
+  margin: 0 0 16px;
+  max-width: 62ch;
+}
+
+.tm-error__retry {
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tm-pink);
+  background: none;
+  border: 1px solid var(--tm-ink-15);
+  padding: 9px 14px;
+  cursor: pointer;
+}
+
+.tm-error__retry:hover {
+  border-color: var(--tm-pink);
+}
+
+/*
+ * A legitimately-null value. Muted rather than invisible: winProbability is
+ * null on every score today and yourFitPercent is null for anyone with no
+ * unit, so this appears often and must not read as a missing cell. The reason
+ * rides on the title attribute, and the dotted underline advertises that
+ * there is one to read.
+ */
+.tm-null {
+  color: var(--tm-ink-40);
+  border-bottom: 1px dotted var(--tm-ink-25);
+  cursor: help;
+}

@@ -111,6 +111,27 @@
   box-shadow: var(--tm-shadow-pill);
 }
 
+/*
+  Sits beside the gradient CTA and must not compete with it: same pill height,
+  quiet outline. "Open dashboard" is the marketing action; this is the door for
+  someone who already has an account.
+*/
+.tm-nav__login {
+  color: var(--tm-ink);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 18px;
+  border: 1.5px solid var(--tm-ink-15);
+  border-radius: 100px;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.tm-nav__login:hover {
+  background: var(--tm-ink-05);
+  border-color: var(--tm-ink-25);
+}
+
 .tm-btn-outline {
   color: var(--tm-ink);
   font-size: 15px;

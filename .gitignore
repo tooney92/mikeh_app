@@ -27,3 +27,9 @@ __pycache__/
 *.py[cod]
 .venv/
 venv/
+
+# Playwright MCP scratch output
+.playwright-mcp/
+
+# Loose verification screenshots from browser-driven checks
+frontend/*.png

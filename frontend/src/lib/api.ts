@@ -72,6 +72,34 @@ export function apiSend<T>(
   })
 }
 
+/**
+ * FastAPI's `detail` is NOT always a string.
+ *
+ * A raise HTTPException(...) sends a string, but a 422 from request-body
+ * validation sends an ARRAY of {loc, msg, type} objects. Passing that array
+ * straight to `new Error(...)` renders it "[object Object]", so every
+ * validation failure in the app used to surface as that — the one message
+ * guaranteed to tell a user nothing and to send a developer to the wrong file.
+ *
+ * The `loc` array is dropped deliberately: it reads ["body", "minFitPercent"]
+ * and naming the wire field in a user-facing string is noise, since the screen
+ * already knows which control the user touched.
+ */
+function describeDetail(detail: unknown): string | undefined {
+  if (typeof detail === 'string') return detail
+  if (Array.isArray(detail)) {
+    const messages = detail
+      .map((item) =>
+        typeof item === 'object' && item !== null && 'msg' in item
+          ? String((item as { msg: unknown }).msg)
+          : null,
+      )
+      .filter((msg): msg is string => !!msg)
+    if (messages.length > 0) return messages.join('. ')
+  }
+  return undefined
+}
+
 async function request<T>(path: string, init: RequestInit): Promise<T> {
   const headers = new Headers(init.headers)
   if (init.body !== undefined) headers.set('Content-Type', 'application/json')
@@ -85,7 +113,7 @@ async function request<T>(path: string, init: RequestInit): Promise<T> {
     // FastAPI puts the human-readable reason in `detail`; fall back to the status text.
     const detail = await response
       .json()
-      .then((body: { detail?: string }) => body.detail)
+      .then((body: { detail?: unknown }) => describeDetail(body.detail))
       .catch(() => undefined)
 
     // A dead token can surface on ANY request, not just /auth/me — the contract

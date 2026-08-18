@@ -6,6 +6,10 @@ import { LoginPage } from './features/auth/LoginPage'
 import { PERMISSIONS } from './features/auth/permissions'
 import { RequireAuth } from './features/auth/RequireAuth'
 import { LandingPage } from './features/landing/LandingPage'
+import { OpportunityDetailPage } from './features/opportunities/OpportunityDetailPage'
+import { OpportunityListPage } from './features/opportunities/OpportunityListPage'
+import { RadarPage } from './features/opportunities/RadarPage'
+import { ProfileSourcesPage } from './features/profiles/ProfileSourcesPage'
 
 /**
  * Routes. The landing page is public; everything under /app needs a session.
@@ -28,12 +32,26 @@ export default function App() {
           </RequireAuth>
         }
       >
-        <Route index element={<RadarPlaceholder />} />
+        <Route index element={<RadarPage />} />
         <Route
           path="opportunities"
           element={
             <RequireAuth permission={PERMISSIONS.opportunityRead}>
-              <OpportunitiesPlaceholder />
+              <OpportunityListPage />
+            </RequireAuth>
+          }
+        />
+        {/*
+          The id is a SLUG string, not an integer — see the todo #2 contract.
+          Gated on the same codename as the list: detail deliberately shows
+          every unit's score regardless of the caller's scope, which is the
+          joint-pitch mechanism, so it needs no additional permission.
+        */}
+        <Route
+          path="opportunities/:opportunityId"
+          element={
+            <RequireAuth permission={PERMISSIONS.opportunityRead}>
+              <OpportunityDetailPage />
             </RequireAuth>
           }
         />
@@ -69,11 +87,18 @@ export default function App() {
             </RequireAuth>
           }
         />
+        {/*
+          Gated on profile:read only. The SOURCES half of this screen is
+          deliberately NOT gated on source:read — that endpoint never checks
+          the codename and serves all 15 rows to a member who holds none of
+          them, so gating it would blank a table the API is willingly filling.
+          The source WRITE controls are gated inside the screen.
+        */}
         <Route
           path="profile"
           element={
             <RequireAuth permission={PERMISSIONS.profileRead}>
-              <ProfilePlaceholder />
+              <ProfileSourcesPage />
             </RequireAuth>
           }
         />
@@ -87,30 +112,12 @@ export default function App() {
 
 /* Placeholders until each todo's contract is agreed and built. -------------- */
 
-const AWAITING_2 =
-  'These screens are todo #2. Its contract is being re-versioned — I declined v1 because the Radar’s “priority actions” list had no endpoint behind it, the pipeline value arrived pre-formatted, and there was no way for a director to filter to one unit.'
-
-function RadarPlaceholder() {
-  return (
-    <PlaceholderPage
-      kicker="Opportunity Radar"
-      title="Your business development radar"
-      lede="The weekly sweep, what needs attention, and the pipeline it adds up to."
-      waitingOn={AWAITING_2}
-    />
-  )
-}
-
-function OpportunitiesPlaceholder() {
-  return (
-    <PlaceholderPage
-      kicker="Opportunities"
-      title="Everything worth pursuing"
-      lede="Ranked by fit for your unit. Two units see the same opportunity in a different position."
-      waitingOn={AWAITING_2}
-    />
-  )
-}
+/*
+ * Radar, Opportunities and Opportunity detail are BUILT — todo #2's contract
+ * locked at v4 and they render real data now, so their placeholders are gone.
+ * Profile & sources is BUILT too, against todo #3's v4 contract.
+ * What remains below is genuinely unstarted work.
+ */
 
 function IndustryPlaceholder() {
   return (
@@ -152,17 +159,6 @@ function LearningPlaceholder() {
       title="How your decisions shape the scoring"
       lede="Every Pursue, Partner, Watch and Reject, and what they add up to."
       waitingOn="This screen is todo #4. Its API is built; the contract has not been proposed yet."
-    />
-  )
-}
-
-function ProfilePlaceholder() {
-  return (
-    <PlaceholderPage
-      kicker="Profile & sources"
-      title="What each unit is looking for"
-      lede="Five unit profiles the AI scores against, and the sources swept each week."
-      waitingOn="This screen is todo #3. Its API is built; the contract has not been proposed yet, and the five-profile layout still needs a design decision the client has not seen."
     />
   )
 }
